@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhà Nghỉ Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090a;--s1:#111318;--s2:#181c24;--s3:#1e2330;--b1:#252c3a;--b2:#2e3648;--gold:#e8b84b;--green:#22c55e;--red:#f43f5e;--blue:#38bdf8;--purple:#a78bfa;--orange:#fb923c;--cyan:#06b6d4;--text:#e8eaf0;--muted:#6b7485;--muted2:#9099aa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px}
+.spin{width:44px;height:44px;border:3px solid var(--b1);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* HEADER */
+.header{background:#0d1117;border-bottom:1px solid var(--b1);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),#c8941a);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo h1{font-size:16px;font-weight:800;color:var(--gold)}
+.logo p{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.hstats{display:flex;align-items:center;gap:14px}
+.hs-n{font-size:18px;font-weight:900;line-height:1}
+.hs-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.live{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* NAV */
+.nav{background:var(--s1);border-bottom:1px solid var(--b1);display:flex;padding:0 14px;overflow-x:auto}
+.nav::-webkit-scrollbar{height:0}
+.ntab{padding:13px 13px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px;transition:all .2s}
+.ntab:hover{color:var(--text)}.ntab.active{color:var(--gold);border-bottom-color:var(--gold)}
+/* MAIN */
+.main{padding:18px;max-width:1400px;margin:0 auto}
+.section{display:none;animation:fadeIn .2s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:18px;margin-bottom:18px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:11px;margin-bottom:18px}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:15px;position:relative;overflow:hidden;transition:transform .2s}
+.sc:hover{transform:translateY(-2px)}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.g::after{background:var(--green)}.sc.r::after{background:var(--red)}.sc.y::after{background:var(--gold)}.sc.b::after{background:var(--blue)}.sc.p::after{background:var(--purple)}.sc.o::after{background:var(--orange)}.sc.c::after{background:var(--cyan)}
+.sc-n{font-size:26px;font-weight:900;line-height:1;margin-bottom:2px}
+.sc.g .sc-n{color:var(--green)}.sc.r .sc-n{color:var(--red)}.sc.y .sc-n{color:var(--gold)}.sc.b .sc-n{color:var(--blue)}.sc.p .sc-n{color:var(--purple)}.sc.o .sc-n{color:var(--orange)}.sc.c .sc-n{color:var(--cyan)}
+.sc-l{font-size:10px;color:var(--muted)}
+.sc-icon{position:absolute;right:12px;top:12px;font-size:20px;opacity:.1}
+/* ROOMS */
+.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.rc{background:var(--s2);border:1px solid var(--b1);border-radius:9px;padding:11px;cursor:pointer;transition:all .2s;position:relative}
+.rc:hover{border-color:var(--gold);transform:translateY(-2px)}
+.rc.occupied{border-color:rgba(244,63,94,.5);background:rgba(244,63,94,.07)}
+.rc.cleaning{border-color:rgba(232,184,75,.5);background:rgba(232,184,75,.07)}
+.rc.empty{border-color:rgba(34,197,94,.3)}
+.rc-num{font-size:17px;font-weight:900}
+.rc-st{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.rc.empty .rc-st{color:var(--green)}.rc.occupied .rc-st{color:var(--red)}.rc.cleaning .rc-st{color:var(--gold)}
+.rc-guest{font-size:9px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rc-dot{width:6px;height:6px;border-radius:50%;position:absolute;top:9px;right:9px}
+.rc.empty .rc-dot{background:var(--green)}.rc.occupied .rc-dot{background:var(--red)}.rc.cleaning .rc-dot{background:var(--gold);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* COURT */
+.court-wrap{overflow-x:auto}
+.ct{width:100%;border-collapse:collapse;min-width:600px}
+.ct th,.ct td{border:1px solid var(--b1);padding:6px 8px;font-size:11px;text-align:center}
+.ct th{background:var(--s2);font-weight:700;text-transform:uppercase;color:var(--muted);font-size:9px}
+.ct td{background:var(--s1);cursor:pointer;transition:background .15s}
+.ct td:hover:not(.tc):not(.sb):not(.sc2){background:var(--s3)}
+.tc{background:var(--s2)!important;font-weight:700;color:var(--muted2);cursor:default!important}
+.sb{background:rgba(244,63,94,.13)!important;color:var(--red);font-weight:600;cursor:default!important;font-size:10px}
+.sc2{background:rgba(34,197,94,.1)!important;color:var(--green);font-weight:600;font-size:10px}
+.sc2:hover{background:rgba(34,197,94,.2)!important}
+.sf{color:rgba(56,189,248,.5);font-size:10px}
+/* LEGEND */
+.legend{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.ld{width:8px;height:8px;border-radius:2px}
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.fg input,.fg select{background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--text);padding:9px 11px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--gold)}
+.fg select option{background:var(--s2)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:0 12px}
+.form-grid .fg{margin-bottom:12px}
+/* BUTTONS */
+.btn{padding:8px 15px;border-radius:8px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-gold{background:var(--gold);color:#000}.btn-gold:hover{background:#f5d080}
+.btn-green{background:var(--green);color:#000}.btn-green:hover{background:#16a34a}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#e11d48}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--b1)}.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:6px 11px;font-size:10px}.btn-xs{padding:4px 8px;font-size:10px}
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;padding:14px}
+.overlay.show{display:flex}
+.modal{background:var(--s1);border:1px solid var(--b2);border-radius:15px;padding:22px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+.modal-lg{max-width:560px}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-title{font-size:15px;font-weight:800}
+.modal-x{width:28px;height:28px;border-radius:6px;background:var(--s2);border:1px solid var(--b1);color:var(--muted2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:inherit;transition:all .2s}
+.modal-x:hover{color:var(--red);border-color:var(--red)}
+/* BOOKING LIST */
+.bk-list{display:flex;flex-direction:column;gap:8px}
+.bk-item{background:var(--s2);border:1px solid var(--b1);border-radius:9px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.bk-name{font-weight:700;font-size:13px}
+.bk-detail{font-size:11px;color:var(--muted);margin-top:2px}
+.badge{padding:3px 7px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase}
+.badge-stay{background:rgba(232,184,75,.15);color:var(--gold)}
+.badge-comm{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-court{background:rgba(56,189,248,.15);color:var(--blue)}
+/* STAFF */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px}
+.staff-card{background:var(--s2);border:1px solid var(--b1);border-radius:11px;padding:14px;display:flex;gap:11px}
+.s-avatar{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;flex-shrink:0}
+/* REVENUE */
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--b1);font-size:12px}
+.rev-row:last-child{border:none;font-weight:800;font-size:14px;padding-top:12px}
+/* CHART */
+.bar-wrap{display:flex;align-items:flex-end;gap:3px;height:110px;margin-top:8px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.bar-lbl{font-size:7px;color:var(--muted);text-align:center}
+/* SHOP */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px}
+.prod-card{background:var(--s2);border:1px solid var(--b1);border-radius:9px;padding:12px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+.prod-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.prod-card.low{border-color:rgba(244,63,94,.4)}
+.prod-icon{font-size:24px;margin-bottom:5px}
+.prod-name{font-size:10px;font-weight:700;margin-bottom:2px;line-height:1.3}
+.prod-price{font-size:12px;font-weight:900;color:var(--gold)}
+.prod-stock{font-size:9px;color:var(--muted);margin-top:1px}
+.prod-stock.low{color:var(--red);font-weight:700}
+.prod-add-btn{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#000;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;line-height:1}
+.cart-item{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:9px 11px;font-size:12px;gap:6px}
+.qty-btn{width:24px;height:24px;border-radius:6px;background:var(--s1);border:1px solid var(--b1);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.stock-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.stock-tbl th,.stock-tbl td{padding:8px 10px;border-bottom:1px solid var(--b1);text-align:left}
+.stock-tbl th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);background:var(--s2)}
+.stock-tbl tr:hover td{background:var(--s2)}
+.stock-input{background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--text);padding:4px 7px;font-size:11px;width:65px;font-family:inherit;outline:none;text-align:center}
+.stock-input:focus{border-color:var(--gold)}
+/* COMMUNITY */
+.person-row{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;font-size:12px}
+.person-num{width:20px;height:20px;border-radius:50%;background:var(--green);color:#000;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* INVOICE */
+@media print{body *{display:none!important}#printArea,#printArea *{display:block!important}#printArea{position:fixed;top:0;left:0;width:100%;background:#fff;color:#000;padding:20px}}
+.inv-box{background:#fff;color:#111;padding:22px;border-radius:10px}
+.inv-box *{color:#111}
+.inv-hd{display:flex;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid #111}
+.inv-title{font-size:19px;font-weight:900}
+.inv-sub{font-size:10px;color:#666;margin-top:2px}
+.inv-tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.inv-tbl th{background:#f5f5f5;padding:6px 8px;text-align:left;font-weight:700;border-bottom:1px solid #ddd}
+.inv-tbl td{padding:6px 8px;border-bottom:1px solid #eee}
+.inv-total{font-size:14px;font-weight:800;text-align:right;margin-top:10px;padding-top:10px;border-top:2px solid #111}
+.inv-footer{font-size:10px;color:#888;text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid #eee}
+/* MISC */
+.price-box{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px;font-size:12px;margin-top:10px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.flex{display:flex}.gap2{gap:8px}.gap3{gap:10px}.mt3{margin-top:10px}.mt4{margin-top:14px}
+.empty{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+.search-bar{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:inherit;outline:none;width:170px}
+.search-bar:focus{border-color:var(--gold)}
+.toast{position:fixed;bottom:18px;right:18px;padding:11px 18px;border-radius:9px;font-weight:700;font-size:12px;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;border:1px solid}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green)}
+.toast.error{background:rgba(244,63,94,.15);border-color:var(--red);color:var(--red)}
+.toast.info{background:rgba(232,184,75,.15);border-color:var(--gold);color:var(--gold)}
+@media(max-width:700px){.hstats .hs:nth-child(n+3){display:none}.main{padding:12px}.two-col{grid-template-columns:1fr}}
+
+/* RENTAL */
+.rental-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px}
+.rrc{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:13px;cursor:pointer;transition:all .2s;position:relative}
+.rrc:hover{border-color:var(--gold);transform:translateY(-2px)}
+.rrc.rented{border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.06)}
+.rrc.empty{border-color:rgba(34,197,94,.3)}
+.rrc.overdue{border-color:rgba(244,63,94,.5);background:rgba(244,63,94,.07)}
+.rrc-num{font-size:16px;font-weight:900}
+.rrc-st{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.rrc.empty .rrc-st{color:var(--green)}.rrc.rented .rrc-st{color:var(--blue)}.rrc.overdue .rrc-st{color:var(--red)}
+.rrc-tenant{font-size:10px;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rrc-info{font-size:10px;color:var(--gold);margin-top:2px}
+.rrc-dot{width:6px;height:6px;border-radius:50%;position:absolute;top:9px;right:9px}
+.rrc.empty .rrc-dot{background:var(--green)}.rrc.rented .rrc-dot{background:var(--blue)}.rrc.overdue .rrc-dot{background:var(--red);animation:blink 1.2s infinite}
+.elec-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.elec-tbl th,.elec-tbl td{padding:8px 10px;border-bottom:1px solid var(--b1);text-align:left}
+.elec-tbl th{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted);background:var(--s2)}
+.elec-tbl tr:hover td{background:var(--s2)}
+.elec-input{background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--text);padding:4px 7px;font-size:11px;width:80px;font-family:inherit;outline:none;text-align:center}
+.elec-input:focus{border-color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spin"></div><p style="color:var(--muted);font-size:13px">Đang kết nối...</p></div>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">🏨</div>
+    <div><h1>Nhà Nghỉ Pro</h1><p id="hDate"></p></div>
+  </div>
+  <div class="hstats" style="display:flex;align-items:center;gap:14px">
+    <div class="hs"><div class="hs-n" id="hOcc" style="color:var(--red)">0</div><div class="hs-l">Có khách</div></div>
+    <div class="hs"><div class="hs-n" id="hFree" style="color:var(--green)">20</div><div class="hs-l">Trống</div></div>
+    <div class="hs"><div class="hs-n" id="hRev" style="color:var(--gold)">0đ</div><div class="hs-l">Hôm nay</div></div>
+    <div class="live"><div class="live-dot"></div>Live</div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="ntab active" id="nt-dashboard" onclick="goTab('dashboard')">📊 Tổng quan</div>
+  <div class="ntab" id="nt-rooms" onclick="goTab('rooms')">🛏️ Phòng</div>
+  <div class="ntab" id="nt-courts" onclick="goTab('courts')">🏓 Sân Pick</div>
+  <div class="ntab" id="nt-shop" onclick="goTab('shop')">🛒 Bán hàng</div>
+  <div class="ntab" id="nt-bookings" onclick="goTab('bookings')">📋 Đặt chỗ</div>
+  <div class="ntab" id="nt-staff" onclick="goTab('staff')">👥 Nhân viên</div>
+  <div class="ntab" id="nt-report" onclick="goTab('report')">📈 Báo cáo</div>
+  <div class="ntab" id="nt-rental" onclick="goTab('rental')">🏠 Phòng trọ</div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="section active" id="tab-dashboard">
+  <div class="sg">
+    <div class="sc g"><div class="sc-icon">🟢</div><div class="sc-n" id="d-free">0</div><div class="sc-l">Phòng trống</div></div>
+    <div class="sc r"><div class="sc-icon">🔴</div><div class="sc-n" id="d-occ">0</div><div class="sc-l">Có khách</div></div>
+    <div class="sc y"><div class="sc-icon">🟡</div><div class="sc-n" id="d-clean">0</div><div class="sc-l">Đang dọn</div></div>
+    <div class="sc b"><div class="sc-icon">🏓</div><div class="sc-n" id="d-courts">5</div><div class="sc-l">Sân sẵn sàng</div></div>
+    <div class="sc o"><div class="sc-icon">🛒</div><div class="sc-n" id="d-shop">0đ</div><div class="sc-l">Bán hàng hôm nay</div></div>
+    <div class="sc p"><div class="sc-icon">💰</div><div class="sc-n" id="d-rev">0đ</div><div class="sc-l">Tổng doanh thu</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">🛏️ Trạng thái phòng</div><button class="btn btn-gold btn-sm" onclick="openCheckin()">➕ Check-in</button></div>
+      <div class="legend"><div class="li"><div class="ld" style="background:var(--green)"></div>Trống</div><div class="li"><div class="ld" style="background:var(--red)"></div>Có khách</div><div class="li"><div class="ld" style="background:var(--gold)"></div>Dọn phòng</div></div>
+      <div class="room-grid" id="dash-rooms"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">⚡ Hoạt động gần đây</div></div>
+      <div id="dash-activity"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOMS -->
+<div class="section" id="tab-rooms">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">🛏️ 20 Phòng nghỉ</div>
+      <div class="flex gap2">
+        <button class="btn btn-ghost btn-sm" onclick="filterRooms('all')">Tất cả</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterRooms('empty')">Trống</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterRooms('occupied')">Có khách</button>
+        <button class="btn btn-gold btn-sm" onclick="openCheckin()">➕ Check-in</button>
+      </div>
+    </div>
+    <div class="legend"><div class="li"><div class="ld" style="background:var(--green)"></div>Trống</div><div class="li"><div class="ld" style="background:var(--red)"></div>Có khách</div><div class="li"><div class="ld" style="background:var(--gold)"></div>Đang dọn</div></div>
+    <div class="room-grid" id="main-rooms"></div>
+  </div>
+</div>
+
+<!-- COURTS -->
+<div class="section" id="tab-courts">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">🏓 Sân Pickleball — <span id="courtDateLbl"></span></div>
+      <div class="flex gap2">
+        <button class="btn btn-green btn-sm" onclick="openCommModal()">👥 Cộng đồng 30k</button>
+        <button class="btn btn-gold btn-sm" onclick="openCourtModal()">⏱️ Thuê giờ 80k</button>
+      </div>
+    </div>
+    <div class="legend" style="gap:16px">
+      <div class="li"><div class="ld" style="background:var(--green);border-radius:50%"></div>Cộng đồng 30k/người (Sáng 7:00–11:30 | Chiều 16:30–22:00)</div>
+      <div class="li"><div class="ld" style="background:var(--gold)"></div>Thuê giờ 80k/giờ</div>
+      <div class="li"><div class="ld" style="background:var(--red)"></div>Đã đặt</div>
+    </div>
+    <div class="court-wrap"><table class="ct" id="courtTable"></table></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-title">🌅 Buổi sáng (7:00–11:30)</div>
+        <button class="btn btn-green btn-sm" onclick="openCommModal('morning')">➕ Thêm người</button>
+      </div>
+      <div id="comm-morning"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-title">🌆 Buổi chiều (16:30–22:00)</div>
+        <button class="btn btn-green btn-sm" onclick="openCommModal('afternoon')">➕ Thêm người</button>
+      </div>
+      <div id="comm-afternoon"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div class="section" id="tab-shop">
+  <div class="sg">
+    <div class="sc o"><div class="sc-icon">💰</div><div class="sc-n" id="sh-rev">0đ</div><div class="sc-l">Doanh thu hôm nay</div></div>
+    <div class="sc b"><div class="sc-icon">🛒</div><div class="sc-n" id="sh-orders">0</div><div class="sc-l">Đơn hàng</div></div>
+    <div class="sc r"><div class="sc-icon">⚠️</div><div class="sc-n" id="sh-low">0</div><div class="sc-l">Sắp hết hàng</div></div>
+    <div class="sc g"><div class="sc-icon">📦</div><div class="sc-n" id="sh-prods">0</div><div class="sc-l">Sản phẩm</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">🛒 Bán hàng nhanh</div><button class="btn btn-ghost btn-sm" onclick="openProductModal()">➕ Thêm SP</button></div>
+      <div class="prod-grid" id="prod-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">🧺 Giỏ hàng</div><button class="btn btn-ghost btn-sm" onclick="clearCart()">🗑️ Xóa</button></div>
+      <div id="cart-list" style="display:flex;flex-direction:column;gap:7px"></div>
+      <div id="cart-empty" class="empty">Nhấn sản phẩm để thêm vào giỏ</div>
+      <div id="cart-footer" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--b1)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:13px;font-weight:700">Tổng:</span>
+          <span id="cart-total" style="font-size:20px;font-weight:900;color:var(--gold)">0đ</span>
+        </div>
+        <div class="fg"><label>Ghi chú (phòng/sân/tên khách)</label><input id="cart-note" placeholder="VD: Phòng 102, Sân 3..."></div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center" id="btn-pay">✅ Thanh toán</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-title">📋 Đơn hàng hôm nay</div></div>
+    <div id="order-list"></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-title">📦 Tồn kho</div></div>
+    <div style="overflow-x:auto"><table class="stock-tbl" id="stock-tbl"></table></div>
+  </div>
+</div>
+
+<!-- BOOKINGS -->
+<div class="section" id="tab-bookings">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📋 Danh sách đặt chỗ</div>
+      <input class="search-bar" placeholder="🔍 Tìm tên..." oninput="searchBk(this.value)" id="bk-search">
+    </div>
+    <div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="filterBk('all')">Tất cả</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterBk('room')">Phòng</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterBk('court')">Thuê sân</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterBk('comm')">Cộng đồng</button>
+    </div>
+    <div class="bk-list" id="bk-list"></div>
+  </div>
+</div>
+
+<!-- STAFF -->
+<div class="section" id="tab-staff">
+  <div class="card">
+    <div class="card-hd"><div class="card-title">👥 Nhân viên</div><button class="btn btn-gold btn-sm" onclick="openStaffModal()">➕ Thêm</button></div>
+    <div class="staff-grid" id="staff-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-title">📅 Lịch ca hôm nay</div></div>
+    <div id="shift-view"></div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div class="section" id="tab-report">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📈 Báo cáo doanh thu</div>
+      <div class="flex gap2">
+        <select id="reportMonth" onchange="renderReport()" style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--text);padding:6px 10px;font-family:inherit;font-size:11px;outline:none"></select>
+        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇️ CSV</button>
+      </div>
+    </div>
+    <div class="sg" id="report-stats"></div>
+    <div class="two-col">
+      <div><div class="card-title" style="margin-bottom:8px">📊 Biểu đồ</div><div class="bar-wrap" id="monthChart"></div></div>
+      <div><div class="card-title" style="margin-bottom:8px">💰 Chi tiết</div><div id="report-detail"></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- RENTAL -->
+<div class="section" id="tab-rental">
+  <div class="sg">
+    <div class="sc b"><div class="sc-icon">🏠</div><div class="sc-n" id="rt-rented">0</div><div class="sc-l">Phòng đang thuê</div></div>
+    <div class="sc g"><div class="sc-icon">🟢</div><div class="sc-n" id="rt-empty">10</div><div class="sc-l">Phòng trống</div></div>
+    <div class="sc r"><div class="sc-icon">⚠️</div><div class="sc-n" id="rt-overdue">0</div><div class="sc-l">Quá hạn thanh toán</div></div>
+    <div class="sc y"><div class="sc-icon">💰</div><div class="sc-n" id="rt-rev">0đ</div><div class="sc-l">Thu tháng này</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">🏠 10 Phòng trọ</div>
+      <div class="flex gap2">
+        <button class="btn btn-ghost btn-sm" onclick="filterRental('all')">Tất cả</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterRental('empty')">Trống</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterRental('rented')">Đang thuê</button>
+        <button class="btn btn-gold btn-sm" onclick="openRentalCheckin()">➕ Cho thuê</button>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:var(--green)"></div>Trống</div>
+      <div class="li"><div class="ld" style="background:var(--blue)"></div>Đang thuê</div>
+      <div class="li"><div class="ld" style="background:var(--red)"></div>Quá hạn</div>
+    </div>
+    <div class="rental-grid" id="rental-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">⚡ Ghi chỉ số điện tháng này</div>
+      <button class="btn btn-ghost btn-sm" onclick="openBulkElec()">📋 Ghi hàng loạt</button>
+    </div>
+    <div style="overflow-x:auto"><table class="elec-tbl" id="elec-tbl"></table></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📋 Hoá đơn tháng này</div>
+      <button class="btn btn-ghost btn-sm" onclick="genAllBills()">🧾 Tạo tất cả HĐ</button>
+    </div>
+    <div id="rental-bills"></div>
+  </div>
+</div>
+</div><!-- /main -->
+
+<!-- MODALS -->
+<div class="overlay" id="m-checkin">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">🛏️ Check-in phòng</div><button class="modal-x" id="x-ci">✕</button></div>
+    <div class="form-grid">
+      <div class="fg"><label>Số phòng *</label><select id="ci-room"></select></div>
+      <div class="fg"><label>Tên khách *</label><input id="ci-name" placeholder="Nguyễn Văn A"></div>
+      <div class="fg"><label>CMND/CCCD</label><input id="ci-id" placeholder="012345678"></div>
+      <div class="fg"><label>Số điện thoại</label><input id="ci-phone" placeholder="0901234567"></div>
+      <div class="fg"><label>Giá/đêm (đồng)</label><input id="ci-price" type="number" value="350000" oninput="updCI()"></div>
+      <div class="fg"><label>Số đêm</label><input id="ci-nights" type="number" value="1" min="1" oninput="updCI()"></div>
+      <div class="fg" style="grid-column:1/-1"><label>Ghi chú</label><input id="ci-note" placeholder="Yêu cầu đặc biệt..."></div>
+    </div>
+    <div class="price-box">💰 Tổng: <strong id="ci-preview" style="color:var(--gold)">350,000đ</strong></div>
+    <div class="flex gap2 mt4"><button class="btn btn-gold" style="flex:1" id="btn-ci">✅ Xác nhận Check-in</button><button class="btn btn-ghost" id="x2-ci">Hủy</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-room">
+  <div class="modal"><div class="modal-hd"><div class="modal-title" id="m-room-title">Phòng</div><button class="modal-x" id="x-room">✕</button></div><div id="m-room-body"></div></div>
+</div>
+
+<div class="overlay" id="m-invoice">
+  <div class="modal modal-lg">
+    <div class="modal-hd"><div class="modal-title">🧾 Hóa đơn</div><button class="modal-x" id="x-inv">✕</button></div>
+    <div id="printArea"><div class="inv-box" id="inv-content"></div></div>
+    <div class="flex gap2 mt4">
+      <button class="btn btn-gold" style="flex:1" onclick="window.print()">🖨️ In</button>
+      <button class="btn btn-green" id="btn-copy-inv">📋 Sao chép</button>
+      <button class="btn btn-ghost" id="x2-inv">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="m-court">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">⏱️ Thuê sân — 80k/giờ</div><button class="modal-x" id="x-court">✕</button></div>
+    <div class="form-grid">
+      <div class="fg"><label>Sân số *</label><select id="cb-court"><option value="1">Sân 1</option><option value="2">Sân 2</option><option value="3">Sân 3</option><option value="4">Sân 4</option><option value="5">Sân 5</option></select></div>
+      <div class="fg"><label>Giờ bắt đầu *</label><select id="cb-time"></select></div>
+      <div class="fg"><label>Số giờ</label><select id="cb-dur"><option value="1">1 giờ</option><option value="2">2 giờ</option><option value="3">3 giờ</option></select></div>
+      <div class="fg"><label>Tên người đặt *</label><input id="cb-name" placeholder="Tên..."></div>
+      <div class="fg"><label>Số điện thoại</label><input id="cb-phone" placeholder="0901234567"></div>
+    </div>
+    <div class="price-box">💰 Tổng: <strong id="cb-preview" style="color:var(--gold)">80,000đ</strong></div>
+    <div class="flex gap2 mt4"><button class="btn btn-gold" style="flex:1" id="btn-court">✅ Xác nhận</button><button class="btn btn-ghost" id="x2-court">Hủy</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-comm">
+  <div class="modal modal-lg">
+    <div class="modal-hd"><div class="modal-title">👥 Cộng đồng — 30k/người</div><button class="modal-x" id="x-comm">✕</button></div>
+    <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:9px;padding:11px;margin-bottom:14px;font-size:12px;color:var(--muted2)">
+      🕐 Sáng: <strong style="color:var(--green)">7:00–11:30</strong> &nbsp;|&nbsp; Chiều: <strong style="color:var(--green)">16:30–22:00</strong> &nbsp;|&nbsp; Giá: <strong style="color:var(--green)">30,000đ/người</strong>
+    </div>
+    <div class="fg"><label>Buổi chơi</label>
+      <select id="comm-sess"><option value="morning">Sáng (7:00–11:30)</option><option value="afternoon">Chiều (16:30–22:00)</option></select>
+    </div>
+    <div class="card-title" style="margin-bottom:8px;margin-top:4px">➕ Thêm người chơi</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="comm-pname" placeholder="Tên người chơi..." style="flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--text);padding:9px 11px;font-size:13px;font-family:inherit;outline:none">
+      <input id="comm-pphone" placeholder="SĐT" style="width:130px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--text);padding:9px 11px;font-size:13px;font-family:inherit;outline:none">
+      <button class="btn btn-green" id="btn-add-person">➕</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="card-title">Danh sách (<span id="comm-cnt">0</span> người)</div>
+      <strong id="comm-total-price" style="color:var(--green);font-size:14px">0đ</strong>
+    </div>
+    <div id="comm-plist" style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;margin-bottom:14px">
+      <div class="empty">Chưa có ai. Thêm người chơi ở trên!</div>
+    </div>
+    <div class="flex gap2"><button class="btn btn-green" style="flex:1" id="btn-save-comm">✅ Lưu & Thu tiền</button><button class="btn btn-ghost" id="x2-comm">Đóng</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-product">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="m-prod-title">➕ Thêm sản phẩm</div><button class="modal-x" id="x-prod">✕</button></div>
+    <div class="form-grid">
+      <div class="fg"><label>Tên sản phẩm *</label><input id="prod-name" placeholder="Nước suối, Bóng..."></div>
+      <div class="fg"><label>Biểu tượng</label>
+        <select id="prod-icon">
+          <option value="💧">💧 Nước</option><option value="🎾">🎾 Bóng Pickleball</option>
+          <option value="🧣">🧣 Quấn cán vợt</option><option value="🧤">🧤 Vớ thể thao</option>
+          <option value="🩹">🩹 Băng tay</option><option value="👟">👟 Giày</option>
+          <option value="🧴">🧴 Vệ sinh vợt</option><option value="🛍️">🛍️ Khác</option>
+        </select>
+      </div>
+      <div class="fg"><label>Giá bán *</label><input id="prod-price" type="number" placeholder="15000"></div>
+      <div class="fg"><label>Tồn kho</label><input id="prod-stock" type="number" value="50"></div>
+      <div class="fg"><label>Cảnh báo khi còn</label><input id="prod-low" type="number" value="5"></div>
+      <div class="fg"><label>Đơn vị</label><input id="prod-unit" value="cái"></div>
+    </div>
+    <input type="hidden" id="prod-eid">
+    <div class="flex gap2 mt4"><button class="btn btn-gold" style="flex:1" id="btn-save-prod">✅ Lưu</button><button class="btn btn-ghost" id="x2-prod">Hủy</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-staff">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="m-staff-title">➕ Thêm nhân viên</div><button class="modal-x" id="x-staff">✕</button></div>
+    <div class="form-grid">
+      <div class="fg"><label>Họ tên *</label><input id="sf-name" placeholder="Nguyễn Thị A"></div>
+      <div class="fg"><label>Số điện thoại</label><input id="sf-phone" placeholder="0901234567"></div>
+      <div class="fg"><label>Vị trí *</label><select id="sf-role"><option>Lễ tân</option><option>Dọn phòng</option><option>Bảo vệ</option><option>Quản lý sân</option><option>Kế toán</option><option>Quản lý</option></select></div>
+      <div class="fg"><label>Ca làm việc</label><select id="sf-shift"><option>Ca sáng (6:00-14:00)</option><option>Ca chiều (14:00-22:00)</option><option>Ca đêm (22:00-6:00)</option><option>Hành chính (8:00-17:00)</option></select></div>
+      <div class="fg"><label>Lương/tháng</label><input id="sf-salary" type="number" placeholder="5000000"></div>
+      <div class="fg"><label>Ngày vào làm</label><input id="sf-date" type="date"></div>
+    </div>
+    <input type="hidden" id="sf-eid">
+    <div class="flex gap2 mt4"><button class="btn btn-gold" style="flex:1" id="btn-save-staff">✅ Lưu</button><button class="btn btn-ghost" id="x2-staff">Hủy</button></div>
+  </div>
+</div>
+
+
+<!-- MODAL RENTAL CHECKIN -->
+<div class="overlay" id="m-rental-ci">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">🏠 Cho thuê phòng</div><button class="modal-x" id="x-rci">✕</button></div>
+    <div class="form-grid">
+      <div class="fg"><label>Số phòng *</label><select id="rci-room"></select></div>
+      <div class="fg"><label>Tên người thuê *</label><input id="rci-name" placeholder="Nguyễn Văn A"></div>
+      <div class="fg"><label>Số điện thoại</label><input id="rci-phone" placeholder="0901234567"></div>
+      <div class="fg"><label>CMND/CCCD</label><input id="rci-id" placeholder="012345678"></div>
+      <div class="fg"><label>Tiền phòng/tháng *</label><input id="rci-price" type="number" placeholder="2000000" value="2000000"></div>
+      <div class="fg"><label>Ngày thuê</label><input id="rci-date" type="date"></div>
+      <div class="fg"><label>Ngày thu tiền hàng tháng</label><input id="rci-payday" type="number" value="5" min="1" max="28" placeholder="5"></div>
+      <div class="fg"><label>Chỉ số điện ban đầu (kWh)</label><input id="rci-elec" type="number" value="0" placeholder="0"></div>
+      <div class="fg" style="grid-column:1/-1"><label>Ghi chú</label><input id="rci-note" placeholder="Ghi chú thêm..."></div>
+    </div>
+    <div class="flex gap2 mt4"><button class="btn btn-gold" style="flex:1" id="btn-rci">✅ Xác nhận cho thuê</button><button class="btn btn-ghost" id="x2-rci">Hủy</button></div>
+  </div>
+</div>
+
+<!-- MODAL RENTAL DETAIL -->
+<div class="overlay" id="m-rental-detail">
+  <div class="modal modal-lg">
+    <div class="modal-hd"><div class="modal-title" id="m-rd-title">Phòng trọ T01</div><button class="modal-x" id="x-rd">✕</button></div>
+    <div id="m-rd-body"></div>
+  </div>
+</div>
+
+<!-- MODAL ELECTRIC BILL -->
+<div class="overlay" id="m-elec-bill">
+  <div class="modal modal-lg">
+    <div class="modal-hd"><div class="modal-title">🧾 Hoá đơn tháng</div><button class="modal-x" id="x-eb">✕</button></div>
+    <div id="printArea2"><div class="inv-box" id="elec-bill-content"></div></div>
+    <div class="flex gap2 mt4">
+      <button class="btn btn-gold" style="flex:1" onclick="window.print()">🖨️ In</button>
+      <button class="btn btn-green" id="btn-copy-bill">📋 Sao chép</button>
+      <button class="btn btn-ghost" id="x2-eb">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BULK ELEC -->
+<div class="overlay" id="m-bulk-elec">
+  <div class="modal modal-lg">
+    <div class="modal-hd"><div class="modal-title">⚡ Ghi chỉ số điện hàng loạt</div><button class="modal-x" id="x-be">✕</button></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Nhập chỉ số điện cuối kỳ cho từng phòng. Hệ thống tự tính số kWh tiêu thụ.</p>
+    <div id="bulk-elec-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+    <div class="flex gap2"><button class="btn btn-gold" style="flex:1" id="btn-save-bulk">✅ Lưu tất cả</button><button class="btn btn-ghost" id="x2-be">Hủy</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const FB = { apiKey:"AIzaSyDhwvanwuUxzumht_xg1dRCTkjAH1D6r4o", authDomain:"quan-ly-nha-nghi-pick.firebaseapp.com", databaseURL:"https://quan-ly-nha-nghi-pick-default-rtdb.firebaseio.com", projectId:"quan-ly-nha-nghi-pick", storageBucket:"quan-ly-nha-nghi-pick.firebasestorage.app", messagingSenderId:"961279204835", appId:"1:961279204835:web:cff2a4f87673a405c314d6" };
+const fbApp = initializeApp(FB);
+const db = getDatabase(fbApp);
+
+// ── CONSTANTS ──────────────────────────────
+const ROOM_PRICE = 350000, COURT_PRICE = 80000, COMM_PRICE = 30000;
+const COLORS = ['#f43f5e','#38bdf8','#22c55e','#a78bfa','#fb923c','#e8b84b','#06b6d4'];
+const RENTAL_TIMES = ['06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+const TABLE_TIMES = ['06:00','07:00','08:00','09:00','10:00','11:00','11:30','12:00','13:00','14:00','15:00','16:00','16:30','17:00','18:00','19:00','20:00','21:00','22:00'];
+const COMM_M = ['07:00','08:00','09:00','10:00','11:00','11:30'];
+const COMM_A = ['16:30','17:00','18:00','19:00','20:00','21:00','22:00'];
+const DEFPRODS = [
+  {name:'Nước suối',icon:'💧',price:10000,stock:50,lowAt:10,unit:'chai'},
+  {name:'Bóng Pickleball',icon:'🎾',price:80000,stock:20,lowAt:3,unit:'quả'},
+  {name:'Quấn cán vợt',icon:'🧣',price:30000,stock:15,lowAt:3,unit:'cuộn'},
+  {name:'Vớ thể thao',icon:'🧤',price:25000,stock:20,lowAt:5,unit:'đôi'},
+  {name:'Băng tay',icon:'🩹',price:20000,stock:15,lowAt:3,unit:'cái'},
+  {name:'Vệ sinh mặt vợt',icon:'🧴',price:45000,stock:10,lowAt:2,unit:'chai'},
+  {name:'Giày đá bóng',icon:'👟',price:350000,stock:5,lowAt:1,unit:'đôi'},
+];
+
+// ── STATE ──────────────────────────────────
+let rooms=[], courts=[], commSlots=[], staff=[], activity=[], history={}, products=[], shopOrders=[], cart=[];
+let commPeople=[], currentRoomId=null, bkFilter='all', prodEditId=null, staffEditId=null;
+
+// ── HELPERS ────────────────────────────────
+const pad = n => String(n).padStart(2,'0');
+const todayStr = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const fmtN = n => n>=1000000?(n/1000000).toFixed(1)+'tr':n>=1000?Math.round(n/1000)+'k':String(n||0);
+const fmtFull = n => (n||0).toLocaleString('vi-VN')+'đ';
+const nowTime = () => new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+const statusLabel = s => ({empty:'Trống',occupied:'Có khách',cleaning:'Đang dọn'}[s]||s);
+const isCM = t => COMM_M.includes(t);
+const isCA = t => COMM_A.includes(t);
+const getSess = t => isCM(t)?'morning':isCA(t)?'afternoon':null;
+const el = id => document.getElementById(id);
+const val = id => el(id).value;
+
+// ── TOAST ──────────────────────────────────
+let toastTmr;
+function toast(msg, type='success') {
+  const t = el('toast');
+  t.textContent = msg; t.className = 'toast '+type; t.classList.add('show');
+  clearTimeout(toastTmr); toastTmr = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ── MODAL ──────────────────────────────────
+function showM(id) { el(id).classList.add('show'); }
+function closeM(id) { el(id).classList.remove('show'); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+[['x-ci','m-checkin'],['x2-ci','m-checkin'],['x-room','m-room'],['x-inv','m-invoice'],['x2-inv','m-invoice'],['x-court','m-court'],['x2-court','m-court'],['x-comm','m-comm'],['x2-comm','m-comm'],['x-prod','m-product'],['x2-prod','m-product'],['x-staff','m-staff'],['x2-staff','m-staff']].forEach(([b,m]) => { const btn=el(b); if(btn) btn.onclick = () => closeM(m); });
+
+// ── NAV ────────────────────────────────────
+function goTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  el('tab-'+name).classList.add('active');
+  el('nt-'+name).classList.add('active');
+  if(name==='bookings') renderBk();
+  if(name==='report') { initReportMonths(); renderReport(); }
+  if(name==='staff') renderStaff();
+  if(name==='shop') { renderProds(); renderOrders(); renderStockTbl(); updShopStats(); }
+  if(name==='courts') { renderCourts(); updCommDash(); }
+  if(name==='rental') { renderRentalGrid('rental-grid'); renderElecTbl(); renderRentalBills(); updRentalStats(); }
+}
+// expose for onclick in HTML
+window.goTab = goTab;
+window.filterRooms = (f) => renderRoomGrid('main-rooms', f);
+window.openCheckin = openCheckin;
+window.openCommModal = openCommModal;
+window.openCourtModal = openCourtModal;
+window.openProductModal = openProductModal;
+window.clearCart = clearCart;
+window.filterBk = (f) => { bkFilter=f; renderBk(); };
+window.searchBk = (v) => renderBk(v);
+window.openStaffModal = openStaffModal;
+window.renderReport = renderReport;
+window.exportCSV = exportCSV;
+window.updCI = updCI;
+
+// ── SEED ───────────────────────────────────
+async function seedRooms() {
+  const s = await get(ref(db,'rooms')); if(s.exists()) return;
+  const b = {};
+  for(let i=1;i<=20;i++) b['room_'+(100+i)] = {id:'room_'+(100+i),num:100+i,status:'empty',guest:null,phone:'',idCard:'',price:ROOM_PRICE,nights:1,checkin:null,note:'',totalPaid:0};
+  await set(ref(db,'rooms'),b);
+}
+async function seedProds() {
+  const s = await get(ref(db,'products')); if(s.exists()) return;
+  const b = {};
+  DEFPRODS.forEach((p,i) => { const k='prod_'+Date.now()+'_'+i; b[k]={...p,id:k,sold:0}; });
+  await set(ref(db,'products'),b);
+}
+
+// ── LISTENERS ──────────────────────────────
+function listenAll() {
+  onValue(ref(db,'rooms'), s => { rooms=s.exists()?Object.values(s.val()):[]; renderRoomGrid('dash-rooms'); renderRoomGrid('main-rooms'); updHeader(); renderBk(); });
+  onValue(ref(db,'courts'), s => { courts=s.exists()?Object.values(s.val()).filter(c=>c.date===todayStr()):[]; renderCourts(); updHeader(); renderBk(); });
+  onValue(ref(db,'community'), s => { commSlots=s.exists()?Object.values(s.val()).filter(c=>c.date===todayStr()):[]; renderCourts(); updHeader(); updCommDash(); renderBk(); });
+  onValue(ref(db,'staff'), s => { staff=s.exists()?Object.values(s.val()):[]; renderStaff(); updHeader(); });
+  onValue(ref(db,'activity'), s => { activity=s.exists()?Object.values(s.val()).sort((a,b)=>b.ts-a.ts).slice(0,30):[]; renderActivity(); });
+  onValue(ref(db,'history'), s => { history=s.exists()?s.val():{}; });
+  onValue(ref(db,'products'), s => { products=s.exists()?Object.values(s.val()):[]; renderProds(); renderStockTbl(); updShopStats(); });
+  onValue(ref(db,'shopOrders'), s => { shopOrders=s.exists()?Object.values(s.val()).filter(o=>o.date===todayStr()).sort((a,b)=>b.ts-a.ts):[]; renderOrders(); updShopStats(); });
+}
+
+// ── HEADER ─────────────────────────────────
+function updHeader() {
+  const occ = rooms.filter(r=>r.status==='occupied');
+  const free = rooms.filter(r=>r.status==='empty').length;
+  const clean = rooms.filter(r=>r.status==='cleaning').length;
+  const roomRev = occ.reduce((s,r)=>s+(r.price||0),0);
+  const courtRev = courts.reduce((s,c)=>s+c.duration*COURT_PRICE,0);
+  const commRev = commSlots.reduce((s,c)=>s+(c.people||0)*COMM_PRICE,0);
+  const shopRev = shopOrders.reduce((s,o)=>s+o.total,0);
+  const total = roomRev+courtRev+commRev+shopRev;
+  const bookedC = new Set([...courts,...commSlots].map(c=>c.court||0)).size;
+  el('hOcc').textContent=occ.length; el('hFree').textContent=free; el('hRev').textContent=fmtN(total)+'đ';
+  el('d-free').textContent=free; el('d-occ').textContent=occ.length; el('d-clean').textContent=clean;
+  el('d-courts').textContent=Math.max(0,5-bookedC);
+  el('d-shop').textContent=fmtN(shopRev)+'đ'; el('d-rev').textContent=fmtN(total)+'đ';
+}
+
+// ── ROOMS ──────────────────────────────────
+function renderRoomGrid(cid, filter='all') {
+  const container = el(cid); if(!container) return;
+  const list = filter==='all' ? rooms : rooms.filter(r=>r.status===filter);
+  container.innerHTML = list.map(r =>
+    '<div class="rc '+r.status+'" data-id="'+r.id+'">' +
+    '<div class="rc-dot"></div>' +
+    '<div class="rc-num">'+r.num+'</div>' +
+    '<div class="rc-st">'+statusLabel(r.status)+'</div>' +
+    (r.guest?'<div class="rc-guest">👤 '+r.guest+'</div>':'') +
+    (r.status==='occupied'?'<div style="font-size:9px;color:var(--gold);margin-top:2px">'+fmtN(r.price)+'đ/đêm</div>':'') +
+    '</div>'
+  ).join('');
+  container.querySelectorAll('.rc').forEach(e => e.addEventListener('click', () => openRoomModal(e.dataset.id)));
+}
+
+// ── ROOM MODAL ─────────────────────────────
+function openRoomModal(id) {
+  currentRoomId = id;
+  const r = rooms.find(x=>x.id===id); if(!r) return;
+  el('m-room-title').textContent = 'Phòng '+r.num;
+  const body = el('m-room-body');
+  if(r.status==='occupied') {
+    const total = (r.price||0)*(r.nights||1);
+    body.innerHTML =
+      '<div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.3);border-radius:10px;padding:13px;margin-bottom:13px">' +
+      '<div style="font-weight:800;font-size:15px;margin-bottom:7px">👤 '+r.guest+'</div>' +
+      '<div style="font-size:12px;color:var(--muted2);display:grid;grid-template-columns:1fr 1fr;gap:5px">' +
+      '<div>📞 '+(r.phone||'—')+'</div><div>🪪 '+(r.idCard||'—')+'</div>' +
+      '<div>🛏️ '+r.nights+' đêm</div><div>💰 '+fmtFull(r.price)+'/đêm</div>' +
+      (r.note?'<div style="grid-column:1/-1">📝 '+r.note+'</div>':'') +
+      '</div>' +
+      '<div style="margin-top:9px;padding-top:9px;border-top:1px solid rgba(244,63,94,.2);font-weight:800;color:var(--gold)">Tổng: '+fmtFull(total)+'</div>' +
+      '</div>' +
+      '<div class="flex gap2">' +
+      '<button class="btn btn-red" style="flex:1" id="rm-co">🚪 Check-out & HĐ</button>' +
+      '<button class="btn btn-ghost" id="rm-inv">🧾 Xem HĐ</button>' +
+      '</div>';
+    el('rm-co').onclick = () => doCheckout(id);
+    el('rm-inv').onclick = () => showInvoice(id);
+  } else if(r.status==='cleaning') {
+    body.innerHTML = '<p style="color:var(--gold);margin-bottom:13px;font-size:13px">🧹 Phòng đang được dọn...</p>' +
+      '<button class="btn btn-green" id="rm-done">✅ Dọn xong, sẵn sàng</button>';
+    el('rm-done').onclick = () => setRStatus(id,'empty');
+  } else {
+    body.innerHTML = '<p style="color:var(--green);margin-bottom:13px;font-size:13px">✅ Phòng trống, sẵn sàng nhận khách</p>' +
+      '<div class="flex gap2">' +
+      '<button class="btn btn-gold" style="flex:1" id="rm-ci">➕ Check-in ngay</button>' +
+      '<button class="btn btn-ghost" id="rm-cl">🧹 Cho dọn phòng</button>' +
+      '</div>';
+    el('rm-ci').onclick = () => { closeM('m-room'); openCheckin(id); };
+    el('rm-cl').onclick = () => setRStatus(id,'cleaning');
+  }
+  showM('m-room');
+}
+
+async function setRStatus(id, status) {
+  const r = rooms.find(x=>x.id===id); if(!r) return;
+  const upd = {status};
+  if(status!=='occupied') { upd.guest=null; upd.phone=''; upd.idCard=''; }
+  await update(ref(db,'rooms/'+id), upd);
+  closeM('m-room'); toast('Phòng '+r.num+': '+statusLabel(status),'info');
+}
+
+async function doCheckout(id) {
+  const r = rooms.find(x=>x.id===id); if(!r) return;
+  const total = (r.price||0)*(r.nights||1);
+  showInvoice(id);
+  await addAct('🚪','Check-out phòng '+r.num+' — '+r.guest+' | '+fmtFull(total));
+  await saveHist('room', total, 1);
+  await update(ref(db,'rooms/'+id), {status:'cleaning',guest:null,phone:'',idCard:'',totalPaid:total});
+  closeM('m-room'); toast('Check-out phòng '+r.num+' thành công!','success');
+}
+
+// ── CHECK-IN ───────────────────────────────
+function openCheckin(preRoom) {
+  const sel = el('ci-room');
+  sel.innerHTML = '<option value="">Chọn phòng trống...</option>';
+  rooms.filter(r=>r.status==='empty').forEach(r => sel.innerHTML += '<option value="'+r.id+'">Phòng '+r.num+'</option>');
+  if(preRoom) sel.value = preRoom;
+  ['ci-name','ci-id','ci-phone','ci-note'].forEach(id => el(id).value='');
+  el('ci-price').value=ROOM_PRICE; el('ci-nights').value=1; updCI();
+  showM('m-checkin');
+}
+function updCI() {
+  el('ci-preview').textContent = fmtFull((parseInt(val('ci-price'))||0)*(parseInt(val('ci-nights'))||1));
+}
+el('btn-ci').onclick = async function() {
+  const roomId = val('ci-room'), name = val('ci-name').trim();
+  if(!roomId) { toast('Chọn phòng!','error'); return; }
+  if(!name) { toast('Nhập tên khách!','error'); return; }
+  const price=parseInt(val('ci-price'))||ROOM_PRICE, nights=parseInt(val('ci-nights'))||1;
+  const rnum = rooms.find(r=>r.id===roomId)?.num||'';
+  await update(ref(db,'rooms/'+roomId), {status:'occupied',guest:name,idCard:val('ci-id'),phone:val('ci-phone'),price,nights,note:val('ci-note'),checkin:new Date().toISOString()});
+  await addAct('✅','Check-in phòng '+rnum+' — '+name);
+  closeM('m-checkin'); toast('Check-in phòng '+rnum+' thành công!','success');
+};
+
+// ── INVOICE ────────────────────────────────
+function showInvoice(id) {
+  const r = rooms.find(x=>x.id===id); if(!r) return;
+  currentRoomId = id;
+  const total=(r.price||0)*(r.nights||1), now=new Date();
+  const invNum='HD'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+r.num;
+  el('inv-content').innerHTML =
+    '<div class="inv-hd">' +
+    '<div><div class="inv-title">🏨 NHÀ NGHỈ</div><div class="inv-sub">ĐT: 0901 234 567</div></div>' +
+    '<div style="text-align:right"><div style="font-weight:800;font-size:16px">HÓA ĐƠN</div><div style="font-size:11px;color:#555">Số: '+invNum+'</div><div style="font-size:11px;color:#555">'+now.toLocaleDateString('vi-VN')+'</div></div>' +
+    '</div>' +
+    '<div style="font-size:12px;margin-bottom:11px">' +
+    '<div><strong>Khách:</strong> '+r.guest+'</div>' +
+    '<div><strong>ĐT:</strong> '+(r.phone||'—')+' &nbsp;|&nbsp; <strong>CMND:</strong> '+(r.idCard||'—')+'</div>' +
+    '<div><strong>Phòng:</strong> '+r.num+' &nbsp;|&nbsp; <strong>Check-in:</strong> '+(r.checkin?new Date(r.checkin).toLocaleDateString('vi-VN'):now.toLocaleDateString('vi-VN'))+'</div>' +
+    '</div>' +
+    '<table class="inv-tbl"><thead><tr><th>Dịch vụ</th><th>Đơn giá</th><th>SL</th><th>Thành tiền</th></tr></thead>' +
+    '<tbody><tr><td>Phòng '+r.num+(r.note?' ('+r.note+')':'')+'</td><td>'+fmtFull(r.price)+'</td><td>'+r.nights+' đêm</td><td><strong>'+fmtFull(total)+'</strong></td></tr></tbody></table>' +
+    '<div class="inv-total">TỔNG CỘNG: '+fmtFull(total)+'</div>' +
+    '<div class="inv-footer">Cảm ơn quý khách! 🙏 Hẹn gặp lại!</div>';
+  showM('m-invoice');
+}
+el('btn-copy-inv').onclick = function() {
+  const r = rooms.find(x=>x.id===currentRoomId); if(!r) return;
+  navigator.clipboard.writeText('🏨 HÓA ĐƠN\nKhách: '+r.guest+'\nPhòng: '+r.num+' — '+r.nights+' đêm\nĐơn giá: '+fmtFull(r.price)+'/đêm\nTổng: '+fmtFull((r.price||0)*(r.nights||1))+'\nNgày: '+new Date().toLocaleDateString('vi-VN'))
+  .then(()=>toast('Đã sao chép!','success')).catch(()=>toast('Không sao chép được','error'));
+};
+
+// ── COURTS ─────────────────────────────────
+function isRentalBooked(court, time) {
+  return courts.find(b => {
+    if(b.court != court) return false;
+    const bS=RENTAL_TIMES.indexOf(b.time), tI=RENTAL_TIMES.indexOf(time);
+    return bS>=0 && tI>=bS && tI<bS+b.duration;
+  });
+}
+function renderCourts() {
+  el('courtDateLbl').textContent = new Date().toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit'});
+  const morningCount = commSlots.filter(c=>c.session==='morning').reduce((s,c)=>s+(c.people||0),0);
+  const afternoonCount = commSlots.filter(c=>c.session==='afternoon').reduce((s,c)=>s+(c.people||0),0);
+  let html = '<thead><tr><th>Giờ</th>';
+  for(let c=1;c<=5;c++) html += '<th>🏓 Sân '+c+'</th>';
+  html += '</tr></thead><tbody>';
+  TABLE_TIMES.forEach(t => {
+    const isM=isCM(t), isA=isCA(t), isComm=isM||isA;
+    const commCount = isM?morningCount:isA?afternoonCount:0;
+    html += '<tr><td class="tc">'+t+(isComm?'<span style="font-size:8px;color:var(--green);margin-left:3px">CĐ</span>':'')+'</td>';
+    for(let c=1;c<=5;c++) {
+      const bk = isRentalBooked(c,t);
+      if(bk) html += '<td class="sb" title="'+bk.name+'">📛 '+bk.name.split(' ').slice(-1)[0]+'</td>';
+      else if(isComm) {
+        html += '<td class="sc2" data-sess="'+(isM?'morning':'afternoon')+'">' + (commCount>0?'👥 '+commCount+'ng':'+ CĐ') + '</td>';
+      } else {
+        html += '<td class="sf" data-court="'+c+'" data-time="'+t+'">+ Thuê</td>';
+      }
+    }
+    html += '</tr>';
+  });
+  const tbl = el('courtTable');
+  tbl.innerHTML = html+'</tbody>';
+  tbl.querySelectorAll('.sf').forEach(e => e.addEventListener('click', () => openCourtModal(e.dataset.court, e.dataset.time)));
+  tbl.querySelectorAll('.sc2').forEach(e => e.addEventListener('click', () => openCommModal(e.dataset.sess)));
+}
+
+function openCourtModal(court, time) {
+  const sel = el('cb-time');
+  sel.innerHTML = RENTAL_TIMES.map(t=>'<option value="'+t+'">'+t+'</option>').join('');
+  if(court) el('cb-court').value=court;
+  if(time) sel.value=time;
+  updCB(); showM('m-court');
+}
+function updCB() {
+  el('cb-preview').textContent = fmtFull((parseInt(val('cb-dur'))||1)*COURT_PRICE);
+}
+el('cb-dur').onchange = updCB;
+el('btn-court').onclick = async function() {
+  const court=parseInt(val('cb-court')), time=val('cb-time'), dur=parseInt(val('cb-dur'));
+  const name=val('cb-name').trim(), phone=val('cb-phone').trim();
+  if(!name) { toast('Nhập tên người đặt!','error'); return; }
+  const key=Date.now().toString();
+  await set(ref(db,'courts/'+key), {id:key,court,time,duration:dur,name,phone,date:todayStr()});
+  await saveHist('court', dur*COURT_PRICE, 0);
+  await addAct('🏓','Thuê sân '+court+' ('+time+', '+dur+'h) — '+name);
+  closeM('m-court');
+  el('cb-name').value=''; el('cb-phone').value='';
+  toast('Đặt sân '+court+' lúc '+time+' thành công!','success');
+};
+
+// ── COMMUNITY ──────────────────────────────
+function openCommModal(session) {
+  commPeople = [];
+  el('comm-sess').value = session||'morning';
+  el('comm-pname').value = '';
+  el('comm-pphone').value = '';
+  renderCommPeople();
+  showM('m-comm');
+}
+function renderCommPeople() {
+  const cnt = commPeople.length, total = cnt*COMM_PRICE;
+  el('comm-cnt').textContent = cnt;
+  el('comm-total-price').textContent = fmtFull(total);
+  const list = el('comm-plist');
+  if(!cnt) { list.innerHTML='<div class="empty">Chưa có ai. Thêm người chơi ở trên!</div>'; return; }
+  list.innerHTML = commPeople.map((p,i) =>
+    '<div class="person-row">' +
+    '<div style="display:flex;align-items:center;gap:9px">' +
+    '<div class="person-num">'+(i+1)+'</div>' +
+    '<div><div style="font-weight:700">'+p.name+'</div>'+(p.phone?'<div style="font-size:10px;color:var(--muted)">📞 '+p.phone+'</div>':'')+'</div>' +
+    '</div>' +
+    '<div style="display:flex;align-items:center;gap:9px">' +
+    '<span style="color:var(--green);font-weight:700;font-size:12px">'+fmtFull(COMM_PRICE)+'</span>' +
+    '<button data-idx="'+i+'" class="rm-person" style="width:22px;height:22px;border-radius:5px;background:transparent;border:1px solid var(--b1);color:var(--red);cursor:pointer;font-size:13px;font-family:inherit">✕</button>' +
+    '</div></div>'
+  ).join('');
+  list.querySelectorAll('.rm-person').forEach(btn => btn.addEventListener('click', () => {
+    commPeople.splice(parseInt(btn.dataset.idx),1); renderCommPeople();
+  }));
+}
+el('btn-add-person').onclick = function() {
+  const name = val('comm-pname').trim();
+  if(!name) { toast('Nhập tên người chơi!','error'); return; }
+  commPeople.push({name, phone:val('comm-pphone').trim()});
+  el('comm-pname').value=''; el('comm-pphone').value='';
+  el('comm-pname').focus();
+  renderCommPeople();
+};
+el('comm-pname').addEventListener('keydown', e => { if(e.key==='Enter') el('btn-add-person').click(); });
+el('comm-pphone').addEventListener('keydown', e => { if(e.key==='Enter') el('btn-add-person').click(); });
+el('btn-save-comm').onclick = async function() {
+  if(!commPeople.length) { toast('Thêm ít nhất 1 người!','error'); return; }
+  const session = val('comm-sess'), total = commPeople.length*COMM_PRICE;
+  const key = Date.now().toString();
+  await set(ref(db,'community/'+key), {id:key,session,people:commPeople.length,playerList:commPeople,total,date:todayStr(),time:nowTime(),ts:Date.now()});
+  await saveHist('comm', total, 0);
+  await addAct('👥','Cộng đồng '+(session==='morning'?'Sáng':'Chiều')+' — '+commPeople.length+' người | '+fmtFull(total));
+  commPeople=[];
+  closeM('m-comm');
+  toast('Đã lưu '+(session==='morning'?'buổi sáng':'buổi chiều')+' — '+fmtFull(total)+'!','success');
+};
+
+function updCommDash() {
+  ['morning','afternoon'].forEach(sess => {
+    const container = el('comm-'+sess); if(!container) return;
+    const data = commSlots.filter(c=>c.session===sess);
+    if(!data.length) { container.innerHTML='<div class="empty">Chưa có ai đăng ký</div>'; return; }
+    let all=[];
+    data.forEach(s => { if(s.playerList) all=[...all,...s.playerList]; });
+    const total = all.length*COMM_PRICE;
+    container.innerHTML =
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px">' +
+      '<span style="color:var(--muted)">'+all.length+' người</span>' +
+      '<span style="font-weight:800;color:var(--green)">'+fmtFull(total)+'</span></div>' +
+      all.map((p,i) =>
+        '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--b1)">' +
+        '<div class="person-num">'+(i+1)+'</div>' +
+        '<div><div style="font-weight:700;font-size:12px">'+p.name+'</div>'+(p.phone?'<div style="font-size:10px;color:var(--muted)">📞 '+p.phone+'</div>':'')+'</div>' +
+        '<span style="margin-left:auto;color:var(--green);font-size:11px;font-weight:700">'+fmtFull(COMM_PRICE)+'</span>' +
+        '</div>'
+      ).join('');
+  });
+}
+
+// ── BOOKINGS ───────────────────────────────
+function renderBk(search) {
+  search = search || val('bk-search')||'';
+  const list = el('bk-list'); if(!list) return;
+  let items=[];
+  if(bkFilter==='all'||bkFilter==='room') rooms.filter(r=>r.status==='occupied'&&(!search||r.guest?.toLowerCase().includes(search.toLowerCase()))).forEach(r=>items.push({type:'room',d:r}));
+  if(bkFilter==='all'||bkFilter==='court') courts.filter(b=>!search||b.name?.toLowerCase().includes(search.toLowerCase())).forEach(b=>items.push({type:'court',d:b}));
+  if(bkFilter==='all'||bkFilter==='comm') commSlots.filter(c=>!search).forEach(c=>items.push({type:'comm',d:c}));
+  if(!items.length){list.innerHTML='<div class="empty">📭 Không có dữ liệu</div>';return;}
+  list.innerHTML = items.map(item => {
+    if(item.type==='room') {
+      const r=item.d;
+      return '<div class="bk-item">' +
+        '<div style="flex:1"><div class="bk-name">👤 '+r.guest+' <span class="badge badge-stay">Đang ở</span></div>' +
+        '<div class="bk-detail">🛏️ Phòng '+r.num+' · 📞 '+(r.phone||'—')+' · '+r.nights+' đêm'+(r.note?' · 📝'+r.note:'')+'</div></div>' +
+        '<div style="text-align:right"><div style="font-weight:800;color:var(--gold)">'+fmtFull((r.price||0)*(r.nights||1))+'</div>' +
+        '<div class="flex gap2 mt3" style="justify-content:flex-end">' +
+        '<button class="btn btn-ghost btn-xs" data-inv="'+r.id+'">🧾</button>' +
+        '<button class="btn btn-red btn-xs" data-co="'+r.id+'">Check-out</button>' +
+        '</div></div></div>';
+    } else if(item.type==='court') {
+      const b=item.d;
+      return '<div class="bk-item">' +
+        '<div style="flex:1"><div class="bk-name">🏓 '+b.name+' <span class="badge badge-court">Sân '+b.court+'</span></div>' +
+        '<div class="bk-detail">⏰ '+b.time+' · '+b.duration+'h · 📞 '+(b.phone||'—')+'</div></div>' +
+        '<div style="text-align:right"><div style="font-weight:800;color:var(--green)">'+fmtFull(b.duration*COURT_PRICE)+'</div>' +
+        '<button class="btn btn-red btn-xs mt3" data-dc="'+b.id+'">Hủy</button>' +
+        '</div></div>';
+    } else {
+      const c=item.d;
+      const players=(c.playerList||[]).map(p=>p.name).slice(0,3).join(', ')+(c.playerList?.length>3?'...':'');
+      return '<div class="bk-item" style="flex-direction:column;align-items:stretch">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">' +
+        '<div><div class="bk-name">👥 Cộng đồng <span class="badge badge-comm">'+(c.session==='morning'?'Buổi Sáng':'Buổi Chiều')+'</span></div>' +
+        '<div class="bk-detail">'+c.time+' · '+(c.people||0)+' người</div></div>' +
+        '<div style="text-align:right"><div style="font-weight:800;color:var(--green)">'+fmtFull((c.total||0))+'</div>' +
+        '<button class="btn btn-red btn-xs mt3" data-dcomm="'+c.id+'">Hủy</button></div></div>' +
+        (players?'<div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--b1);font-size:11px;color:var(--muted2)">👤 '+players+'</div>':'') +
+        '</div>';
+    }
+  }).join('');
+  list.querySelectorAll('[data-inv]').forEach(b=>b.addEventListener('click',()=>showInvoice(b.dataset.inv)));
+  list.querySelectorAll('[data-co]').forEach(b=>b.addEventListener('click',()=>doCheckout(b.dataset.co)));
+  list.querySelectorAll('[data-dc]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Hủy đặt sân?'))return;await remove(ref(db,'courts/'+b.dataset.dc));toast('Đã hủy','info');}));
+  list.querySelectorAll('[data-dcomm]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Hủy đăng ký?'))return;await remove(ref(db,'community/'+b.dataset.dcomm));toast('Đã hủy','info');}));
+}
+
+// ── SHOP ───────────────────────────────────
+function updShopStats() {
+  const rev=shopOrders.reduce((s,o)=>s+o.total,0), low=products.filter(p=>p.stock<=(p.lowAt||5)).length;
+  el('sh-rev').textContent=fmtN(rev)+'đ'; el('sh-orders').textContent=shopOrders.length;
+  el('sh-low').textContent=low; el('sh-prods').textContent=products.length;
+}
+function renderProds() {
+  const grid=el('prod-grid'); if(!grid) return;
+  if(!products.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">Chưa có sản phẩm</div>';return;}
+  grid.innerHTML = products.map(p =>
+    '<div class="prod-card '+(p.stock<=(p.lowAt||5)?'low':'')+'" data-id="'+p.id+'">' +
+    '<button class="prod-add-btn" data-id="'+p.id+'">+</button>' +
+    '<div class="prod-icon">'+p.icon+'</div>' +
+    '<div class="prod-name">'+p.name+'</div>' +
+    '<div class="prod-price">'+fmtFull(p.price)+'</div>' +
+    '<div class="prod-stock '+(p.stock<=(p.lowAt||5)?'low':'')+'">'+(p.stock<=(p.lowAt||5)?'⚠️ ':'')+p.stock+' '+p.unit+'</div>' +
+    '</div>'
+  ).join('');
+  grid.querySelectorAll('.prod-card').forEach(e=>e.addEventListener('click',ev=>{if(!ev.target.classList.contains('prod-add-btn'))addToCart(e.dataset.id);}));
+  grid.querySelectorAll('.prod-add-btn').forEach(e=>e.addEventListener('click',ev=>{ev.stopPropagation();addToCart(e.dataset.id);}));
+}
+function addToCart(id) {
+  const p=products.find(x=>x.id===id); if(!p) return;
+  if(p.stock<=0){toast('Hết hàng!','error');return;}
+  const ex=cart.find(c=>c.id===id);
+  if(ex){if(ex.qty>=p.stock){toast('Không đủ hàng!','error');return;}ex.qty++;}
+  else cart.push({id,name:p.name,icon:p.icon,price:p.price,unit:p.unit,qty:1});
+  renderCart(); toast(p.name+' +1','info');
+}
+function renderCart() {
+  const listEl=el('cart-list'), footerEl=el('cart-footer'), emptyEl=el('cart-empty');
+  if(!cart.length){listEl.innerHTML='';footerEl.style.display='none';emptyEl.style.display='block';return;}
+  emptyEl.style.display='none'; footerEl.style.display='block';
+  listEl.innerHTML = cart.map(c =>
+    '<div class="cart-item">' +
+    '<div style="display:flex;align-items:center;gap:7px;flex:1;min-width:0">' +
+    '<span style="font-size:17px">'+c.icon+'</span>' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.name+'</div>' +
+    '<div style="font-size:9px;color:var(--muted)">'+fmtFull(c.price)+'/'+c.unit+'</div></div>' +
+    '</div>' +
+    '<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">' +
+    '<button class="qty-btn" data-id="'+c.id+'" data-d="-1">−</button>' +
+    '<span style="font-weight:800;min-width:18px;text-align:center;font-size:13px">'+c.qty+'</span>' +
+    '<button class="qty-btn" data-id="'+c.id+'" data-d="1">+</button>' +
+    '<span style="font-weight:700;color:var(--gold);min-width:60px;text-align:right;font-size:12px">'+fmtFull(c.price*c.qty)+'</span>' +
+    '</div></div>'
+  ).join('');
+  listEl.querySelectorAll('.qty-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    const item=cart.find(c=>c.id===btn.dataset.id); if(!item) return;
+    item.qty+=parseInt(btn.dataset.d);
+    if(item.qty<=0) cart=cart.filter(c=>c.id!==btn.dataset.id);
+    renderCart();
+  }));
+  el('cart-total').textContent = fmtFull(cart.reduce((s,c)=>s+c.price*c.qty,0));
+}
+function clearCart(){cart=[];renderCart();toast('Đã xóa giỏ','info');}
+el('btn-pay').onclick = async function() {
+  if(!cart.length){toast('Giỏ hàng trống!','error');return;}
+  const note=val('cart-note').trim(), total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const key=Date.now().toString();
+  await set(ref(db,'shopOrders/'+key),{id:key,items:cart.map(c=>({...c})),total,note,date:todayStr(),time:nowTime(),ts:Date.now()});
+  for(const item of cart){
+    const p=products.find(x=>x.id===item.id); if(!p) continue;
+    await update(ref(db,'products/'+item.id),{stock:Math.max(0,p.stock-item.qty),sold:(p.sold||0)+item.qty});
+  }
+  await saveHist('shop', total, 0);
+  await addAct('🛒','Bán hàng'+(note?' ('+note+')':'')+' — '+fmtFull(total));
+  cart=[]; el('cart-note').value=''; renderCart();
+  toast('Thanh toán '+fmtFull(total)+' thành công!','success');
+};
+function renderOrders() {
+  const e=el('order-list'); if(!e) return;
+  if(!shopOrders.length){e.innerHTML='<div class="empty">Chưa có đơn hàng hôm nay</div>';return;}
+  e.innerHTML='<div class="bk-list">'+shopOrders.map(o=>
+    '<div class="bk-item">' +
+    '<div style="flex:1"><div class="bk-name">🛒 '+(o.note||'Khách lẻ')+' <span style="font-size:10px;color:var(--muted)">'+o.time+'</span></div>' +
+    '<div class="bk-detail">'+o.items.map(i=>i.icon+' '+i.name+' x'+i.qty).join(' · ')+'</div></div>' +
+    '<div style="font-weight:800;color:var(--gold)">'+fmtFull(o.total)+'</div></div>'
+  ).join('')+'</div>';
+}
+function renderStockTbl() {
+  const e=el('stock-tbl'); if(!e) return;
+  if(!products.length){e.innerHTML='';return;}
+  e.innerHTML='<thead><tr><th></th><th>Sản phẩm</th><th>Giá bán</th><th>Tồn kho</th><th>Đã bán</th><th>Cảnh báo</th><th>Thao tác</th></tr></thead><tbody>'+
+  products.map(p=>
+    '<tr>' +
+    '<td style="font-size:18px;text-align:center">'+p.icon+'</td>' +
+    '<td><div style="font-weight:700">'+p.name+'</div><div style="font-size:9px;color:var(--muted)">'+p.unit+'</div></td>' +
+    '<td style="color:var(--gold);font-weight:700">'+fmtFull(p.price)+'</td>' +
+    '<td><input class="stock-input" type="number" value="'+p.stock+'" data-id="'+p.id+'" style="'+(p.stock<=(p.lowAt||5)?'border-color:var(--red)':'')+'"></td>' +
+    '<td style="color:var(--muted2)">'+(p.sold||0)+'</td>' +
+    '<td style="'+(p.stock<=(p.lowAt||5)?'color:var(--red);font-weight:700':'')+'">'+(p.stock<=(p.lowAt||5)?'⚠️ ':'')+(p.lowAt||5)+' '+p.unit+'</td>' +
+    '<td><div class="flex gap2"><button class="btn btn-ghost btn-xs" data-ep="'+p.id+'">✏️</button><button class="btn btn-red btn-xs" data-dp="'+p.id+'">🗑️</button></div></td>' +
+    '</tr>'
+  ).join('')+'</tbody>';
+  e.querySelectorAll('.stock-input').forEach(inp=>inp.addEventListener('change',async function(){await update(ref(db,'products/'+this.dataset.id),{stock:Math.max(0,parseInt(this.value)||0)});toast('Cập nhật tồn kho','info');}));
+  e.querySelectorAll('[data-ep]').forEach(b=>b.addEventListener('click',()=>openProductModal(b.dataset.ep)));
+  e.querySelectorAll('[data-dp]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Xóa?'))return;await remove(ref(db,'products/'+b.dataset.dp));toast('Đã xóa','info');}));
+}
+function openProductModal(eid) {
+  prodEditId=eid||null;
+  if(eid){
+    const p=products.find(x=>x.id===eid); if(!p) return;
+    el('m-prod-title').textContent='✏️ Sửa sản phẩm';
+    el('prod-name').value=p.name; el('prod-icon').value=p.icon; el('prod-price').value=p.price;
+    el('prod-stock').value=p.stock; el('prod-low').value=p.lowAt||5; el('prod-unit').value=p.unit;
+  } else {
+    el('m-prod-title').textContent='➕ Thêm sản phẩm';
+    ['prod-name','prod-price'].forEach(id=>el(id).value='');
+    el('prod-stock').value=50; el('prod-low').value=5; el('prod-unit').value='cái';
+  }
+  showM('m-product');
+}
+el('btn-save-prod').onclick = async function() {
+  const name=val('prod-name').trim(), price=parseInt(val('prod-price'))||0;
+  if(!name){toast('Nhập tên SP!','error');return;}
+  if(!price){toast('Nhập giá bán!','error');return;}
+  const data={name,icon:val('prod-icon'),price,stock:parseInt(val('prod-stock'))||0,lowAt:parseInt(val('prod-low'))||5,unit:val('prod-unit')||'cái'};
+  if(prodEditId){await update(ref(db,'products/'+prodEditId),data);toast('Đã cập nhật!','success');}
+  else{const k='prod_'+Date.now();data.id=k;data.sold=0;await set(ref(db,'products/'+k),data);toast('Đã thêm SP!','success');}
+  closeM('m-product'); prodEditId=null;
+};
+
+// ── STAFF ──────────────────────────────────
+function renderStaff() {
+  const grid=el('staff-grid'); if(!grid) return;
+  if(!staff.length){grid.innerHTML='<div class="empty">Chưa có nhân viên</div>';return;}
+  grid.innerHTML=staff.map(s=>
+    '<div class="staff-card">' +
+    '<div class="s-avatar" style="background:'+(s.color||'#e8b84b')+'22;color:'+(s.color||'#e8b84b')+'">'+s.name.charAt(0)+'</div>' +
+    '<div style="flex:1"><div style="font-weight:700;font-size:13px">'+s.name+'</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:1px">'+s.role+'</div>' +
+    '<div style="font-size:10px;color:var(--gold);margin-top:3px">⏰ '+s.shift+'</div>' +
+    (s.salary?'<div style="font-size:10px;color:var(--muted2);margin-top:1px">💰 '+fmtFull(s.salary)+'/tháng</div>':'') +
+    '<div class="flex gap2 mt3">' +
+    '<button class="btn btn-ghost btn-xs" data-es="'+s.id+'">✏️</button>' +
+    '<button class="btn btn-red btn-xs" data-ds="'+s.id+'">🗑️</button>' +
+    '</div></div></div>'
+  ).join('');
+  grid.querySelectorAll('[data-es]').forEach(b=>b.addEventListener('click',()=>openStaffModal(b.dataset.es)));
+  grid.querySelectorAll('[data-ds]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Xóa nhân viên?'))return;await remove(ref(db,'staff/'+b.dataset.ds));toast('Đã xóa','info');}));
+  const shifts=['Ca sáng (6:00-14:00)','Ca chiều (14:00-22:00)','Ca đêm (22:00-6:00)','Hành chính (8:00-17:00)'];
+  el('shift-view').innerHTML=shifts.map(sh=>{
+    const ms=staff.filter(s=>s.shift===sh);
+    return '<div style="margin-bottom:11px">' +
+      '<div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">'+sh+'</div>' +
+      (ms.length?ms.map(s=>'<span style="display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:4px 9px;margin:2px;font-size:11px">' +
+        '<span style="color:'+(s.color||'#e8b84b')+'">'+s.name.charAt(0)+'</span>'+s.name+' — <span style="color:var(--muted)">'+s.role+'</span></span>').join('')
+      :'<span style="font-size:11px;color:var(--muted)">Không có ai</span>') +
+      '</div>';
+  }).join('');
+}
+function openStaffModal(eid) {
+  staffEditId=eid||null;
+  if(eid){
+    const s=staff.find(x=>x.id===eid); if(!s) return;
+    el('m-staff-title').textContent='✏️ Sửa nhân viên';
+    el('sf-name').value=s.name; el('sf-phone').value=s.phone||''; el('sf-role').value=s.role;
+    el('sf-shift').value=s.shift; el('sf-salary').value=s.salary||''; el('sf-date').value=s.date||'';
+  } else {
+    el('m-staff-title').textContent='➕ Thêm nhân viên';
+    ['sf-name','sf-phone','sf-salary','sf-date'].forEach(id=>el(id).value='');
+  }
+  showM('m-staff');
+}
+el('btn-save-staff').onclick = async function() {
+  const name=val('sf-name').trim();
+  if(!name){toast('Nhập tên nhân viên!','error');return;}
+  const data={name,phone:val('sf-phone'),role:val('sf-role'),shift:val('sf-shift'),salary:parseInt(val('sf-salary'))||0,date:val('sf-date')};
+  if(staffEditId){await update(ref(db,'staff/'+staffEditId),data);toast('Đã cập nhật','success');}
+  else{const k=Date.now().toString();data.id=k;data.color=COLORS[staff.length%COLORS.length];await set(ref(db,'staff/'+k),data);await addAct('👥','Thêm nhân viên: '+name);toast('Đã thêm!','success');}
+  closeM('m-staff'); staffEditId=null;
+};
+
+// ── REPORT ─────────────────────────────────
+function initReportMonths() {
+  const sel=el('reportMonth'); if(!sel||sel.options.length>0) return;
+  const now=new Date();
+  for(let m=0;m<6;m++){const d=new Date(now.getFullYear(),now.getMonth()-m,1);const mk=d.getFullYear()+'-'+pad(d.getMonth()+1);sel.innerHTML+='<option value="'+mk+'">Tháng '+(d.getMonth()+1)+'/'+d.getFullYear()+'</option>';}
+}
+function renderReport() {
+  const mk=val('reportMonth'), mData=history[mk]?Object.values(history[mk]):[];
+  const roomRev=mData.reduce((s,d)=>s+(d.roomRev||0),0);
+  const courtRev=mData.reduce((s,d)=>s+(d.courtRev||0),0);
+  const commRev=mData.reduce((s,d)=>s+(d.commRev||0),0);
+  const shopRev=mData.reduce((s,d)=>s+(d.shopRev||0),0);
+  const total=roomRev+courtRev+commRev+shopRev;
+  const checkouts=mData.reduce((s,d)=>s+(d.checkouts||0),0);
+  el('report-stats').innerHTML=
+    '<div class="sc y"><div class="sc-icon">🏨</div><div class="sc-n">'+fmtN(roomRev)+'</div><div class="sc-l">Phòng</div></div>'+
+    '<div class="sc b"><div class="sc-icon">🏓</div><div class="sc-n">'+fmtN(courtRev)+'</div><div class="sc-l">Thuê sân</div></div>'+
+    '<div class="sc g"><div class="sc-icon">👥</div><div class="sc-n">'+fmtN(commRev)+'</div><div class="sc-l">Cộng đồng</div></div>'+
+    '<div class="sc o"><div class="sc-icon">🛒</div><div class="sc-n">'+fmtN(shopRev)+'</div><div class="sc-l">Bán hàng</div></div>'+
+    '<div class="sc p"><div class="sc-icon">💰</div><div class="sc-n">'+fmtN(total)+'</div><div class="sc-l">Tổng doanh thu</div></div>';
+  const maxV=Math.max(...mData.map(d=>(d.roomRev||0)+(d.courtRev||0)+(d.commRev||0)+(d.shopRev||0)),1);
+  el('monthChart').innerHTML=mData.sort((a,b)=>a.day-b.day).map(d=>{
+    const t=(d.roomRev||0)+(d.courtRev||0)+(d.commRev||0)+(d.shopRev||0);
+    return '<div class="bar-col"><div class="bar" style="height:'+Math.max((t/maxV)*105,3)+'px;background:linear-gradient(180deg,var(--gold),#b45309)" title="'+fmtFull(t)+'"></div><div class="bar-lbl">'+d.day+'</div></div>';
+  }).join('');
+  const avg=mData.length?Math.round(total/mData.length):0;
+  el('report-detail').innerHTML=
+    '<div class="rev-row"><span>🏨 Phòng</span><span style="color:var(--gold)">'+fmtFull(roomRev)+'</span></div>'+
+    '<div class="rev-row"><span>🏓 Thuê sân</span><span style="color:var(--blue)">'+fmtFull(courtRev)+'</span></div>'+
+    '<div class="rev-row"><span>👥 Cộng đồng</span><span style="color:var(--green)">'+fmtFull(commRev)+'</span></div>'+
+    '<div class="rev-row"><span>🛒 Bán hàng</span><span style="color:var(--orange)">'+fmtFull(shopRev)+'</span></div>'+
+    '<div class="rev-row"><span>📊 TB/ngày</span><span>'+fmtFull(avg)+'</span></div>'+
+    '<div class="rev-row"><span>💰 TỔNG THÁNG</span><span>'+fmtFull(total)+'</span></div>';
+}
+function exportCSV() {
+  const mk=val('reportMonth'), mData=history[mk]?Object.values(history[mk]).sort((a,b)=>a.day-b.day):[];
+  let csv='Ngày,Phòng,Sân thuê,Cộng đồng,Bán hàng,Tổng,Check-out\n';
+  mData.forEach(d=>csv+=mk+'-'+pad(d.day)+','+(d.roomRev||0)+','+(d.courtRev||0)+','+(d.commRev||0)+','+(d.shopRev||0)+','+(((d.roomRev||0)+(d.courtRev||0)+(d.commRev||0)+(d.shopRev||0)))+','+(d.checkouts||0)+'\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv); a.download='baocao_'+mk+'.csv'; a.click();
+  toast('Đã xuất CSV!','success');
+}
+
+// ── ACTIVITY ───────────────────────────────
+async function addAct(icon, text) {
+  const key=Date.now().toString();
+  await set(ref(db,'activity/'+key),{icon,text,time:nowTime(),ts:Date.now()});
+}
+function renderActivity() {
+  const e=el('dash-activity'); if(!e) return;
+  e.innerHTML=activity.slice(0,8).map(a=>
+    '<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--b1)">' +
+    '<span style="font-size:15px;flex-shrink:0">'+a.icon+'</span>' +
+    '<div><div style="font-size:11px;line-height:1.4">'+a.text+'</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:2px">🕐 '+a.time+'</div></div></div>'
+  ).join('');
+}
+
+// ── HISTORY ────────────────────────────────
+async function saveHist(type, amount, checkouts) {
+  const mk=todayStr().substring(0,7), day=new Date().getDate();
+  const hr=ref(db,'history/'+mk+'/day_'+pad(day));
+  const snap=await get(hr);
+  const prev=snap.exists()?snap.val():{day,roomRev:0,courtRev:0,commRev:0,shopRev:0,checkouts:0};
+  const upd={...prev};
+  if(type==='room') { upd.roomRev=(upd.roomRev||0)+amount; upd.checkouts=(upd.checkouts||0)+checkouts; }
+  if(type==='court') upd.courtRev=(upd.courtRev||0)+amount;
+  if(type==='comm') upd.commRev=(upd.commRev||0)+amount;
+  if(type==='shop') upd.shopRev=(upd.shopRev||0)+amount;
+  if(type==='rental') upd.rentalRev=(upd.rentalRev||0)+amount;
+  await set(hr, upd);
+}
+
+
+// ── RENTAL ROOMS ────────────────────────────────────────────
+const ELEC_PRICE = 4000;
+let rentalRooms=[], elecRecords=[], rentalPayments=[];
+
+async function seedRentalRooms() {
+  const s = await get(ref(db,'rental_rooms')); if(s.exists()) return;
+  const b = {};
+  for(let i=1;i<=10;i++) {
+    const k = 'tro_'+pad(i);
+    b[k] = {id:k,num:'T'+pad(i),status:'empty',tenant:null,phone:'',idCard:'',price:2000000,rentDate:null,payDay:5,note:'',elecStart:0,elecCurrent:0};
+  }
+  await set(ref(db,'rental_rooms'),b);
+}
+
+function listenRental() {
+  onValue(ref(db,'rental_rooms'), s => { rentalRooms=s.exists()?Object.values(s.val()):[]; renderRentalGrid('rental-grid'); updRentalStats(); renderElecTbl(); renderRentalBills(); });
+  onValue(ref(db,'elec_records'), s => { elecRecords=s.exists()?Object.values(s.val()):[]; renderElecTbl(); renderRentalBills(); });
+  onValue(ref(db,'rental_payments'), s => { rentalPayments=s.exists()?Object.values(s.val()):[]; updRentalStats(); });
+}
+
+function updRentalStats() {
+  const rented=rentalRooms.filter(r=>r.status==='rented').length;
+  const empty=rentalRooms.filter(r=>r.status==='empty').length;
+  const overdue=rentalRooms.filter(r=>r.status==='rented'&&new Date().getDate()>(r.payDay||5)+3).length;
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  const monthRev=rentalPayments.filter(p=>p.month===thisMonth).reduce((s,p)=>s+p.total,0);
+  if(el('rt-rented')) el('rt-rented').textContent=rented;
+  if(el('rt-empty')) el('rt-empty').textContent=empty;
+  if(el('rt-overdue')) el('rt-overdue').textContent=overdue;
+  if(el('rt-rev')) el('rt-rev').textContent=fmtN(monthRev)+'đ';
+}
+
+function isOverdue(r) { return r.status==='rented' && new Date().getDate()>(r.payDay||5)+3; }
+
+function renderRentalGrid(cid, filter='all') {
+  const container=el(cid); if(!container) return;
+  const list=filter==='all'?rentalRooms:rentalRooms.filter(r=>r.status===filter);
+  container.innerHTML=list.map(r=>{
+    const od=isOverdue(r), cls=r.status==='empty'?'empty':od?'overdue':'rented';
+    return '<div class="rrc '+cls+'" data-id="'+r.id+'">' +
+      '<div class="rrc-dot"></div>' +
+      '<div class="rrc-num">'+r.num+'</div>' +
+      '<div class="rrc-st">'+(od?'Quá hạn':r.status==='empty'?'Trống':'Đang thuê')+'</div>' +
+      (r.tenant?'<div class="rrc-tenant">👤 '+r.tenant+'</div>':'') +
+      (r.status==='rented'?'<div class="rrc-info">'+fmtN(r.price)+'đ/tháng</div>':'') +
+      (r.status==='rented'?'<div style="font-size:9px;color:var(--muted);margin-top:1px">⚡ '+r.elecCurrent+' kWh</div>':'') +
+      '</div>';
+  }).join('');
+  container.querySelectorAll('.rrc').forEach(e=>e.addEventListener('click',()=>openRentalDetail(e.dataset.id)));
+}
+window.filterRental = function(f){ renderRentalGrid('rental-grid',f); };
+
+function openRentalCheckin(preRoom) {
+  const sel=el('rci-room');
+  sel.innerHTML='<option value="">Chọn phòng trống...</option>';
+  rentalRooms.filter(r=>r.status==='empty').forEach(r=>sel.innerHTML+='<option value="'+r.id+'">Phòng '+r.num+'</option>');
+  if(preRoom) sel.value=preRoom;
+  ['rci-name','rci-phone','rci-id','rci-note'].forEach(id=>el(id).value='');
+  el('rci-price').value=2000000; el('rci-payday').value=5; el('rci-elec').value=0;
+  el('rci-date').value=new Date().toISOString().split('T')[0];
+  showM('m-rental-ci');
+}
+window.openRentalCheckin = openRentalCheckin;
+
+el('btn-rci').onclick = async function() {
+  const roomId=val('rci-room'), name=val('rci-name').trim();
+  if(!roomId){toast('Chọn phòng!','error');return;}
+  if(!name){toast('Nhập tên người thuê!','error');return;}
+  const price=parseInt(val('rci-price'))||2000000, elecStart=parseInt(val('rci-elec'))||0;
+  const rnum=rentalRooms.find(r=>r.id===roomId)?.num||'';
+  await update(ref(db,'rental_rooms/'+roomId),{status:'rented',tenant:name,phone:val('rci-phone'),idCard:val('rci-id'),price,rentDate:val('rci-date'),payDay:parseInt(val('rci-payday'))||5,note:val('rci-note'),elecStart,elecCurrent:elecStart});
+  await addAct('🏠','Cho thuê phòng trọ '+rnum+' — '+name);
+  closeM('m-rental-ci'); toast('Đã cho thuê phòng '+rnum+'!','success');
+};
+
+function openRentalDetail(id) {
+  const r=rentalRooms.find(x=>x.id===id); if(!r) return;
+  el('m-rd-title').textContent='Phòng trọ '+r.num;
+  const body=el('m-rd-body');
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  if(r.status==='rented') {
+    const rec=elecRecords.find(e=>e.roomId===id&&e.month===thisMonth);
+    const kwh=rec?rec.kwh:0, elecCost=kwh*ELEC_PRICE, total=r.price+elecCost;
+    body.innerHTML=
+      '<div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:13px;margin-bottom:13px">'+
+      '<div style="font-weight:800;font-size:15px;margin-bottom:7px">👤 '+r.tenant+'</div>'+
+      '<div style="font-size:12px;color:var(--muted2);display:grid;grid-template-columns:1fr 1fr;gap:5px">'+
+      '<div>📞 '+(r.phone||'—')+'</div><div>🪪 '+(r.idCard||'—')+'</div>'+
+      '<div>📅 Thuê từ: '+(r.rentDate||'—')+'</div><div>💳 Thu ngày: '+r.payDay+' hàng tháng</div>'+
+      '<div>🏠 Tiền phòng: '+fmtFull(r.price)+'/tháng</div>'+
+      '<div>⚡ Chỉ số: '+r.elecCurrent+' kWh</div>'+
+      (r.note?'<div style="grid-column:1/-1">📝 '+r.note+'</div>':'')+
+      '</div>'+
+      (rec?'<div style="margin-top:9px;padding-top:9px;border-top:1px solid rgba(56,189,248,.2);font-size:12px">⚡ '+rec.oldReading+' → '+rec.newReading+' = <strong style="color:var(--gold)">'+kwh+' kWh × 4,000đ = '+fmtFull(elecCost)+'</strong></div>':'')+
+      '<div style="margin-top:9px;font-weight:800;color:var(--gold)">Tổng tháng: '+fmtFull(total)+'</div>'+
+      '</div>'+
+      '<div class="flex gap2" style="flex-wrap:wrap">'+
+      '<button class="btn btn-green" id="rd-bill">🧾 Hoá đơn</button>'+
+      '<button class="btn btn-gold" id="rd-paid">✅ Thu tiền</button>'+
+      '<button class="btn btn-ghost" id="rd-elec">⚡ Cập nhật điện</button>'+
+      '<button class="btn btn-red btn-sm" id="rd-end">🚪 Kết thúc HĐ</button>'+
+      '</div>';
+    el('rd-bill').onclick=()=>showRentalBill(id);
+    el('rd-paid').onclick=()=>markRentalPaid(id);
+    el('rd-elec').onclick=()=>openUpdateElec(id);
+    el('rd-end').onclick=()=>endRental(id);
+  } else {
+    body.innerHTML='<p style="color:var(--green);margin-bottom:13px;font-size:13px">✅ Phòng trống, sẵn sàng cho thuê</p>'+
+      '<button class="btn btn-gold" id="rd-rent">➕ Cho thuê ngay</button>';
+    el('rd-rent').onclick=()=>{closeM('m-rental-detail');openRentalCheckin(id);};
+  }
+  showM('m-rental-detail');
+}
+window.openRentalDetail = openRentalDetail;
+
+function openUpdateElec(roomId) {
+  const r=rentalRooms.find(x=>x.id===roomId); if(!r) return;
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  const rec=elecRecords.find(e=>e.roomId===roomId&&e.month===thisMonth);
+  el('m-rd-title').textContent='⚡ Ghi điện — '+r.num;
+  const body=el('m-rd-body');
+  body.innerHTML=
+    '<div style="background:var(--s2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px">'+
+    '<div style="font-weight:700;margin-bottom:5px">'+r.num+' — '+r.tenant+'</div>'+
+    '<div style="color:var(--muted2)">Chỉ số cũ: <strong style="color:var(--gold)">'+r.elecCurrent+' kWh</strong></div>'+
+    '</div>'+
+    '<div class="fg"><label>Chỉ số mới (kWh) *</label>'+
+    '<input id="elec-new" type="number" placeholder="'+(r.elecCurrent+100)+'" value="'+(rec?rec.newReading:'')+'" style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--text);padding:9px 11px;font-size:13px;font-family:inherit;outline:none;width:100%"></div>'+
+    '<div id="elec-calc" style="font-size:12px;color:var(--muted);margin:6px 0 14px"></div>'+
+    '<div class="flex gap2">'+
+    '<button class="btn btn-gold" style="flex:1" id="btn-save-elec">✅ Lưu</button>'+
+    '<button class="btn btn-ghost" id="btn-back-elec">← Quay lại</button>'+
+    '</div>';
+  el('elec-new').oninput=function(){
+    const kwh=Math.max(0,(parseInt(this.value)||0)-r.elecCurrent);
+    el('elec-calc').innerHTML=kwh>0?'⚡ <strong>'+kwh+' kWh</strong> × 4,000đ = <strong style="color:var(--gold)">'+fmtFull(kwh*ELEC_PRICE)+'</strong>':'';
+  };
+  el('btn-back-elec').onclick=()=>openRentalDetail(roomId);
+  el('btn-save-elec').onclick=async function(){
+    const newVal=parseInt(val('elec-new'))||0;
+    if(newVal<r.elecCurrent){toast('Chỉ số mới phải lớn hơn chỉ số cũ!','error');return;}
+    const kwh=newVal-r.elecCurrent, key=roomId+'_'+thisMonth;
+    await set(ref(db,'elec_records/'+key),{id:key,roomId,roomNum:r.num,month:thisMonth,oldReading:r.elecCurrent,newReading:newVal,kwh,cost:kwh*ELEC_PRICE,ts:Date.now()});
+    await update(ref(db,'rental_rooms/'+roomId),{elecCurrent:newVal});
+    await addAct('⚡','Ghi điện phòng '+r.num+' — '+kwh+' kWh | '+fmtFull(kwh*ELEC_PRICE));
+    closeM('m-rental-detail'); toast('Đã lưu chỉ số điện phòng '+r.num+'!','success');
+  };
+  showM('m-rental-detail');
+}
+
+function renderElecTbl() {
+  const tbl=el('elec-tbl'); if(!tbl) return;
+  const rented=rentalRooms.filter(r=>r.status==='rented');
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  if(!rented.length){tbl.innerHTML='<tr><td style="padding:20px;text-align:center;color:var(--muted)">Chưa có phòng nào đang thuê</td></tr>';return;}
+  tbl.innerHTML='<thead><tr><th>Phòng</th><th>Người thuê</th><th>Chỉ số cũ</th><th>Chỉ số mới</th><th>Tiêu thụ</th><th>Tiền điện</th><th>Trạng thái</th><th></th></tr></thead><tbody>'+
+  rented.map(r=>{
+    const rec=elecRecords.find(e=>e.roomId===r.id&&e.month===thisMonth);
+    return '<tr>'+
+      '<td><strong>'+r.num+'</strong></td><td>'+r.tenant+'</td>'+
+      '<td style="color:var(--muted2)">'+r.elecCurrent+' kWh</td>'+
+      '<td>'+(rec?rec.newReading+' kWh':'<span style="color:var(--muted)">Chưa ghi</span>')+'</td>'+
+      '<td>'+(rec?'<strong>'+rec.kwh+' kWh</strong>':'—')+'</td>'+
+      '<td>'+(rec?'<span style="color:var(--gold);font-weight:700">'+fmtFull(rec.cost)+'</span>':'—')+'</td>'+
+      '<td>'+(rec?'<span style="color:var(--green)">✅ Đã ghi</span>':'<span style="color:var(--orange)">⏳ Chưa ghi</span>')+'</td>'+
+      '<td><button class="btn btn-ghost btn-xs" data-er="'+r.id+'">⚡ Ghi</button></td>'+
+      '</tr>';
+  }).join('')+'</tbody>';
+  tbl.querySelectorAll('[data-er]').forEach(b=>b.addEventListener('click',()=>{openRentalDetail(b.dataset.er);setTimeout(()=>openUpdateElec(b.dataset.er),50);}));
+}
+
+function openBulkElec() {
+  const rented=rentalRooms.filter(r=>r.status==='rented');
+  if(!rented.length){toast('Chưa có phòng nào đang thuê','info');return;}
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  el('bulk-elec-list').innerHTML=rented.map(r=>{
+    const rec=elecRecords.find(e=>e.roomId===r.id&&e.month===thisMonth);
+    return '<div style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 12px">'+
+      '<div style="font-weight:700;font-size:13px;min-width:38px">'+r.num+'</div>'+
+      '<div style="flex:1;font-size:11px;color:var(--muted2)">'+r.tenant+'<br><span style="color:var(--muted)">Cũ: '+r.elecCurrent+' kWh</span></div>'+
+      '<input class="elec-input bulk-in" data-id="'+r.id+'" data-old="'+r.elecCurrent+'" type="number" placeholder="Mới..." value="'+(rec?rec.newReading:'')+'" style="width:85px">'+
+      '<span style="font-size:10px;color:var(--muted)">kWh</span>'+
+      '<div class="bk-kwh" data-id="'+r.id+'" style="font-size:11px;color:var(--gold);min-width:65px;text-align:right">'+(rec?rec.kwh+' kWh':'')+'</div>'+
+      '</div>';
+  }).join('');
+  el('bulk-elec-list').querySelectorAll('.bulk-in').forEach(inp=>{
+    inp.oninput=function(){
+      const kwh=Math.max(0,(parseInt(this.value)||0)-(parseInt(this.dataset.old)||0));
+      const kw=el('bulk-elec-list').querySelector('.bk-kwh[data-id="'+this.dataset.id+'"]');
+      if(kw) kw.textContent=kwh>0?kwh+' kWh ('+fmtFull(kwh*ELEC_PRICE)+')':'';
+    };
+  });
+  showM('m-bulk-elec');
+}
+window.openBulkElec = openBulkElec;
+
+el('btn-save-bulk').onclick = async function() {
+  const inputs=el('bulk-elec-list').querySelectorAll('.bulk-in');
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  let saved=0;
+  for(const inp of inputs){
+    const newVal=parseInt(inp.value)||0; if(!newVal) continue;
+    const roomId=inp.dataset.id, oldVal=parseInt(inp.dataset.old)||0;
+    if(newVal<oldVal){toast('Chỉ số mới phải lớn hơn chỉ số cũ!','error');continue;}
+    const kwh=newVal-oldVal, key=roomId+'_'+thisMonth;
+    const r=rentalRooms.find(x=>x.id===roomId);
+    await set(ref(db,'elec_records/'+key),{id:key,roomId,roomNum:r?.num||'',month:thisMonth,oldReading:oldVal,newReading:newVal,kwh,cost:kwh*ELEC_PRICE,ts:Date.now()});
+    await update(ref(db,'rental_rooms/'+roomId),{elecCurrent:newVal});
+    saved++;
+  }
+  if(saved>0){await addAct('⚡','Ghi điện hàng loạt — '+saved+' phòng');}
+  closeM('m-bulk-elec');
+  toast(saved>0?'Đã lưu '+saved+' phòng!':'Không có phòng nào được cập nhật', saved>0?'success':'info');
+};
+
+function renderRentalBills() {
+  const container=el('rental-bills'); if(!container) return;
+  const rented=rentalRooms.filter(r=>r.status==='rented');
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  if(!rented.length){container.innerHTML='<div class="empty">Chưa có phòng nào đang thuê</div>';return;}
+  container.innerHTML='<div class="bk-list">'+rented.map(r=>{
+    const rec=elecRecords.find(e=>e.roomId===r.id&&e.month===thisMonth);
+    const kwh=rec?rec.kwh:0, elecCost=kwh*ELEC_PRICE, total=r.price+elecCost;
+    const paid=rentalPayments.find(p=>p.roomId===r.id&&p.month===thisMonth);
+    return '<div class="bk-item">'+
+      '<div style="flex:1">'+
+      '<div class="bk-name">🏠 '+r.num+' — '+r.tenant+' '+(paid?'<span class="badge" style="background:rgba(34,197,94,.15);color:var(--green)">✅ Đã thu</span>':'<span class="badge" style="background:rgba(244,63,94,.15);color:var(--red)">⏳ Chưa thu</span>')+'</div>'+
+      '<div class="bk-detail">🏠 '+fmtFull(r.price)+(rec?' + ⚡ '+rec.kwh+'kWh = '+fmtFull(elecCost):' + ⚡ chưa ghi điện')+'</div>'+
+      '</div>'+
+      '<div style="text-align:right">'+
+      '<div style="font-weight:800;color:var(--gold);font-size:14px">'+fmtFull(total)+'</div>'+
+      '<div class="flex gap2 mt3" style="justify-content:flex-end">'+
+      '<button class="btn btn-ghost btn-xs" data-rb="'+r.id+'">🧾 HĐ</button>'+
+      (!paid?'<button class="btn btn-green btn-xs" data-rp="'+r.id+'">✅ Thu tiền</button>':'')+
+      '</div></div></div>';
+  }).join('')+'</div>';
+  container.querySelectorAll('[data-rb]').forEach(b=>b.addEventListener('click',()=>showRentalBill(b.dataset.rb)));
+  container.querySelectorAll('[data-rp]').forEach(b=>b.addEventListener('click',()=>markRentalPaid(b.dataset.rp)));
+}
+
+function showRentalBill(roomId) {
+  const r=rentalRooms.find(x=>x.id===roomId); if(!r) return;
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  const rec=elecRecords.find(e=>e.roomId===roomId&&e.month===thisMonth);
+  const kwh=rec?rec.kwh:0, elecCost=kwh*ELEC_PRICE, total=r.price+elecCost;
+  const now=new Date(), mStr='Tháng '+(now.getMonth()+1)+'/'+now.getFullYear();
+  el('elec-bill-content').innerHTML=
+    '<div class="inv-hd">'+
+    '<div><div class="inv-title">🏠 NHÀ TRỌ</div><div class="inv-sub">ĐT: 0901 234 567</div></div>'+
+    '<div style="text-align:right"><div style="font-weight:800;font-size:16px">HOÁ ĐƠN</div><div style="font-size:11px;color:#555">'+mStr+'</div><div style="font-size:11px;color:#555">'+now.toLocaleDateString('vi-VN')+'</div></div>'+
+    '</div>'+
+    '<div style="font-size:12px;margin-bottom:11px">'+
+    '<div><strong>Phòng:</strong> '+r.num+' &nbsp;|&nbsp; <strong>Người thuê:</strong> '+r.tenant+'</div>'+
+    '<div><strong>ĐT:</strong> '+(r.phone||'—')+'</div>'+
+    '</div>'+
+    '<table class="inv-tbl"><thead><tr><th>Khoản thu</th><th>Chi tiết</th><th>Thành tiền</th></tr></thead><tbody>'+
+    '<tr><td>Tiền phòng</td><td>'+mStr+'</td><td><strong>'+fmtFull(r.price)+'</strong></td></tr>'+
+    (rec?'<tr><td>Tiền điện</td><td>'+rec.oldReading+' → '+rec.newReading+' kWh ('+kwh+' kWh × 4,000đ)</td><td><strong>'+fmtFull(elecCost)+'</strong></td></tr>':
+         '<tr><td>Tiền điện</td><td>Chưa ghi chỉ số</td><td>—</td></tr>')+
+    '</tbody></table>'+
+    '<div class="inv-total">TỔNG CỘNG: '+fmtFull(total)+'</div>'+
+    '<div class="inv-footer">Vui lòng thanh toán trước ngày '+r.payDay+' hàng tháng 🙏</div>';
+  showM('m-elec-bill');
+}
+window.showRentalBill = showRentalBill;
+
+async function markRentalPaid(roomId) {
+  const r=rentalRooms.find(x=>x.id===roomId); if(!r) return;
+  const thisMonth=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+  const rec=elecRecords.find(e=>e.roomId===roomId&&e.month===thisMonth);
+  const kwh=rec?rec.kwh:0, total=r.price+kwh*ELEC_PRICE;
+  const key=roomId+'_'+thisMonth;
+  await set(ref(db,'rental_payments/'+key),{id:key,roomId,roomNum:r.num,tenant:r.tenant,month:thisMonth,roomCost:r.price,elecCost:kwh*ELEC_PRICE,total,paidAt:new Date().toISOString(),ts:Date.now()});
+  await saveHist('rental',total,0);
+  await addAct('💰','Thu tiền trọ '+r.num+' — '+r.tenant+' | '+fmtFull(total));
+  toast('Đã thu tiền phòng '+r.num+' — '+fmtFull(total),'success');
+}
+window.markRentalPaid = markRentalPaid;
+
+async function endRental(roomId) {
+  if(!confirm('Kết thúc hợp đồng? Phòng sẽ chuyển sang trống.')) return;
+  const r=rentalRooms.find(x=>x.id===roomId); if(!r) return;
+  await update(ref(db,'rental_rooms/'+roomId),{status:'empty',tenant:null,phone:'',idCard:'',rentDate:null,note:''});
+  await addAct('🚪','Kết thúc HĐ phòng trọ '+r.num+' — '+r.tenant);
+  closeM('m-rental-detail');
+  toast('Đã kết thúc HĐ phòng '+r.num,'info');
+}
+window.endRental = endRental;
+
+window.genAllBills = function() { toast('Xem hoá đơn từng phòng bằng nút 🧾 HĐ bên dưới','info'); };
+
+el('btn-copy-bill').onclick = function() {
+  const c=el('elec-bill-content');
+  if(c) navigator.clipboard.writeText(c.innerText).then(()=>toast('Đã sao chép!','success')).catch(()=>toast('Không sao chép được','error'));
+};
+
+[['x-rci','m-rental-ci'],['x2-rci','m-rental-ci'],['x-rd','m-rental-detail'],['x-eb','m-elec-bill'],['x2-eb','m-elec-bill'],['x-be','m-bulk-elec'],['x2-be','m-bulk-elec']].forEach(([b,m])=>{const btn=el(b);if(btn)btn.onclick=()=>closeM(m);});
+
+// ── INIT ───────────────────────────────────
+async function init() {
+  el('hDate').textContent = new Date().toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+  el('courtDateLbl').textContent = new Date().toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit'});
+  try {
+    await seedRooms();
+    await seedProds();
+    await seedRentalRooms();
+    listenAll();
+    listenRental();
+    el('loading').style.display='none';
+  } catch(e) {
+    el('loading').innerHTML='<p style="color:var(--red);font-size:14px">❌ Lỗi kết nối Firebase!</p><p style="color:var(--muted);font-size:12px;margin-top:8px">'+e.message+'</p>';
+  }
+}
+init();
+</script>
+</body>
+</html>
